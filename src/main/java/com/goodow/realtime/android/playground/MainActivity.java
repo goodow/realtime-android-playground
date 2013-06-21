@@ -52,7 +52,7 @@ public class MainActivity extends RoboActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    Realtime.authorize("fakeUser", "fakeToken");
+    Realtime.authorize("889452220137502675385", "59e77d779ab69874b07d50f3e35d49c90cd68582");
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
       @Override
       public void onLoaded(Document document) {
