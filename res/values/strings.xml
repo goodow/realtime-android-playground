@@ -3,6 +3,6 @@
 
     <string name="app_name">Goodow Realtime Playground</string>
     <string name="action_settings">Settings</string>
-    <!-- <string name="com.goodow.realtime.channel">http://192.168.1.15:8888</string> -->
-
+    
+    <!-- <string name="com.goodow.realtime.serverAddress">http://localhost:8888</string> -->
 </resources>
