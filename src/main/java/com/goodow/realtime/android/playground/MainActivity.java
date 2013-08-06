@@ -32,13 +32,62 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 public class MainActivity extends RoboActivity {
-  private static final String STR_KEY = "demo_string";
   private Document doc;
   private Model mod;
   private CollaborativeMap root;
-  private CollaborativeString str;
   @InjectView(R.id.editText)
   EditText editText;
+
+  private final RealtimeModel stringModel = new RealtimeModel() {
+    private static final String STR_KEY = "demo_string";
+    private CollaborativeString str;
+
+    @Override
+    public void connectRealtime() {
+      str.addObjectChangedListener(new EventHandler<ObjectChangedEvent>() {
+        @Override
+        public void handleEvent(ObjectChangedEvent event) {
+          if (!event.isLocal) {
+            updateUi();
+          }
+        }
+      });
+    }
+
+    @Override
+    public void connectUi() {
+      editText.addTextChangedListener(new TextWatcher() {
+        @Override
+        public void afterTextChanged(Editable arg0) {
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+          str.setText(editText.getText().toString());
+        }
+      });
+    }
+
+    @Override
+    public void initializeModel() {
+      CollaborativeString string = mod.createString("Edit Me!");
+      root.set(STR_KEY, string);
+    }
+
+    @Override
+    public void loadField() {
+      str = root.get(STR_KEY);
+    }
+
+    @Override
+    public void updateUi() {
+      editText.setText(str.getText());
+    }
+  };
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -68,41 +117,16 @@ public class MainActivity extends RoboActivity {
       public void onInitializer(Model model) {
         mod = model;
         root = mod.getRoot();
-        initializeString();
+        stringModel.initializeModel();
       }
     };
-    Realtime.load("@tmp/test", onLoaded, opt_initializer, null);
+    Realtime.load("@tmp/demo", onLoaded, opt_initializer, null);
   }
 
   private void connectString() {
-    str = root.get(STR_KEY);
-    editText.addTextChangedListener(new TextWatcher() {
-      @Override
-      public void afterTextChanged(Editable arg0) {
-      }
-
-      @Override
-      public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-      }
-
-      @Override
-      public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-        str.setText(editText.getText().toString());
-      }
-    });
-    str.addObjectChangedListener(new EventHandler<ObjectChangedEvent>() {
-      @Override
-      public void handleEvent(ObjectChangedEvent event) {
-        if (!event.isLocal) {
-          editText.setText(str.getText());
-        }
-      }
-    });
+    stringModel.loadField();
+    stringModel.updateUi();
+    stringModel.connectUi();
+    stringModel.connectRealtime();
   }
-
-  private void initializeString() {
-    CollaborativeString string = mod.createString("Edit Me!");
-    root.set(STR_KEY, string);
-  }
-
 }
