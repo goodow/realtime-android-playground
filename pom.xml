@@ -4,10 +4,11 @@
   <parent>
     <groupId>com.goodow.realtime</groupId>
     <artifactId>realtime-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
   </parent>
   <artifactId>realtime-android-playground</artifactId>
   <packaging>apk</packaging>
+  <version>0.0.1-SNAPSHOT</version>
   <url>https://github.com/goodow/realtime-android-playground/</url>
   <inceptionYear>2013</inceptionYear>
 
@@ -20,7 +21,7 @@
     <dependency>
       <groupId>com.goodow.realtime</groupId>
       <artifactId>realtime-android</artifactId>
-      <version>${project.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
   </dependencies>
   
@@ -32,7 +33,7 @@
         <artifactId>android-maven-plugin</artifactId>
         <configuration>
           <sdk>
-            <platform>17</platform>
+            <platform>18</platform>
           </sdk>
         </configuration>
       </plugin>

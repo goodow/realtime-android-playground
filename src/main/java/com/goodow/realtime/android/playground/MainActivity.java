@@ -101,7 +101,7 @@ public class MainActivity extends RoboActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    Realtime.authorize("889452220137502675385", "59e77d779ab69874b07d50f3e35d49c90cd68582");
+    Realtime.authorize("688185492143008835447", "68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
       @Override
       public void onLoaded(Document document) {
