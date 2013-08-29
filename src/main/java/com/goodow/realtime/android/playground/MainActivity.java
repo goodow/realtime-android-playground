@@ -23,11 +23,14 @@ import com.goodow.realtime.ModelInitializerHandler;
 import com.goodow.realtime.ObjectChangedEvent;
 import com.goodow.realtime.Realtime;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
@@ -103,14 +106,31 @@ public class MainActivity extends RoboActivity {
   }
 
   @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.menu_redo:
+        // TODO:redo
+        Toast.makeText(this, "redo", 0).show();
+        break;
+      // TODO:undo
+      case R.id.menu_undo:
+        Toast.makeText(this, "undo", 0).show();
+        break;
+    }
+    return super.onOptionsItemSelected(item);
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    
+    ActionBar actionBar = this.getActionBar();
+    actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
+
     userIdText.setText("688185492143008835447");
     accessTokenText.setText("68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
     docIdText.setText("@tmp/demo");
-    
+
     Realtime.authorize(userIdText.getText().toString(), accessTokenText.getText().toString());
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
       @Override
