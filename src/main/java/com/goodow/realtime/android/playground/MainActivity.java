@@ -30,7 +30,6 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.Toast;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
@@ -56,9 +55,9 @@ public class MainActivity extends RoboActivity {
       str.addObjectChangedListener(new EventHandler<ObjectChangedEvent>() {
         @Override
         public void handleEvent(ObjectChangedEvent event) {
-          if (!event.isLocal) {
-            updateUi();
-          }
+          // if (!event.isLocal) {
+          updateUi();
+          // }
         }
       });
     }
@@ -108,13 +107,15 @@ public class MainActivity extends RoboActivity {
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
-      case R.id.menu_redo:
-        // TODO:redo
-        Toast.makeText(this, "redo", 0).show();
-        break;
-      // TODO:undo
       case R.id.menu_undo:
-        Toast.makeText(this, "undo", 0).show();
+        if (mod.canUndo()) {
+          mod.undo();
+        }
+        break;
+      case R.id.menu_redo:
+        if (mod.canRedo()) {
+          mod.redo();
+        }
         break;
     }
     return super.onOptionsItemSelected(item);
@@ -129,7 +130,7 @@ public class MainActivity extends RoboActivity {
 
     userIdText.setText("688185492143008835447");
     accessTokenText.setText("68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
-    docIdText.setText("@tmp/demo");
+    docIdText.setText("@tmp/demo3");
 
     Realtime.authorize(userIdText.getText().toString(), accessTokenText.getText().toString());
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
