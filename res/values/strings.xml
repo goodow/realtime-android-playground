@@ -1,8 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <!-- <string name="com.goodow.realtime.serverAddress">http://localhost:8888</string> -->
+    
     <string name="app_name">Goodow Realtime Playground</string>
     <string name="action_settings">Settings</string>
-    
-    <!-- <string name="com.goodow.realtime.serverAddress">http://localhost:8888</string> -->
+
+    <!-- Step1 -->
+    <string name="step1">Step 1  Authorize</string>
+    <string name="userId">User ID</string>
+    <string name="accessToken">Access Token</string>
+    <string name="step1Description">To use the Goodow Realtime API Playground you must first Authorize the Playground.</string>
+
+    <!-- Step2 -->
+    <string name="step2">Step 2  Create or Open a document</string>
+    <string name="documentId">Document ID</string>
+    <string name="step2Description">You need to Create a new document or Open an existing document on which to collaborate.</string>
+
+    <!-- Step3 -->
+    <string name="step3">Step 3  Share</string>
+    <string name="step3Description">To collaborate you must Share this document with other users or open this same document in a new window and collaborate with yourself.</string>
+
+    <!-- Step4 -->
+    <string name="step4">Step 4  Collaborate</string>
+    <string name="step4Description">Goodow Realtime collaborative documents are made of 4 types of collaborative elements: String, Lists, Maps and Custom objects. A Goodow Realtime collaborative document can have as many of these collaborative elements as they need. As a demonstration, You will find below UI widgets representing collaborative elements of each type.</string>
+
+    <!-- Collaborative strings -->
+    <string name="CollaborativeStrings">Collaborative strings</string>
+    <string name="CollaborativeStringsDescription">Collaborative strings are just like normal strings, except that all browser sessions will be notified and updated when the string changes. Events are fired when strings are inserted to the collaborative string or when part of the string is deleted.</string>
+    <string name="CollaborativeStringsEdit">Edit the demo Collaborative String</string>
+
 </resources>

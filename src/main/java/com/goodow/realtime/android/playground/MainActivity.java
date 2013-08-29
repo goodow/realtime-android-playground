@@ -35,8 +35,14 @@ public class MainActivity extends RoboActivity {
   private Document doc;
   private Model mod;
   private CollaborativeMap root;
+  @InjectView(R.id.userId)
+  EditText userIdText;
+  @InjectView(R.id.accessToken)
+  EditText accessTokenText;
+  @InjectView(R.id.docId)
+  EditText docIdText;
   @InjectView(R.id.editText)
-  EditText editText;
+  EditText stringText;
 
   private final RealtimeModel stringModel = new RealtimeModel() {
     private static final String STR_KEY = "demo_string";
@@ -56,7 +62,7 @@ public class MainActivity extends RoboActivity {
 
     @Override
     public void connectUi() {
-      editText.addTextChangedListener(new TextWatcher() {
+      stringText.addTextChangedListener(new TextWatcher() {
         @Override
         public void afterTextChanged(Editable arg0) {
         }
@@ -67,7 +73,7 @@ public class MainActivity extends RoboActivity {
 
         @Override
         public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-          str.setText(editText.getText().toString());
+          str.setText(stringText.getText().toString());
         }
       });
     }
@@ -85,7 +91,7 @@ public class MainActivity extends RoboActivity {
 
     @Override
     public void updateUi() {
-      editText.setText(str.getText());
+      stringText.setText(str.getText());
     }
   };
 
@@ -100,8 +106,12 @@ public class MainActivity extends RoboActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-
-    Realtime.authorize("688185492143008835447", "68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
+    
+    userIdText.setText("688185492143008835447");
+    accessTokenText.setText("68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
+    docIdText.setText("@tmp/demo");
+    
+    Realtime.authorize(userIdText.getText().toString(), accessTokenText.getText().toString());
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
       @Override
       public void onLoaded(Document document) {
@@ -120,7 +130,7 @@ public class MainActivity extends RoboActivity {
         stringModel.initializeModel();
       }
     };
-    Realtime.load("@tmp/demo", onLoaded, opt_initializer, null);
+    Realtime.load(docIdText.getText().toString(), onLoaded, opt_initializer, null);
   }
 
   private void connectString() {
