@@ -1,178 +1,196 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <LinearLayout
+    <ProgressBar
+        android:id="@+id/pb_indeterminate"
+        style="@style/ProgressBarIndeterminate"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:layout_gravity="top"
+        android:layout_marginBottom="-8.0dip"
+        android:layout_marginTop="-6.0dip" 
+        android:visibility="gone"/>
 
-        <!-- Step1_start -->
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/background"
-            android:padding="@dimen/titleDim"
-            android:text="@string/step1" />
-
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TableRow>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/contentDim"
-                    android:text="@string/userId"
-                    android:textSize="12sp" />
-
-                <EditText
-                    android:id="@+id/userId"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:minEms="5"
-                    android:padding="@dimen/contentDim" />
-            </TableRow>
-
-            <TableRow>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/contentDim"
-                    android:text="@string/accessToken"
-                    android:textSize="12sp" />
-
-                <EditText
-                    android:id="@+id/accessToken"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:minEms="5"
-                    android:padding="@dimen/contentDim" />
-            </TableRow>
-        </TableLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/contentDim"
-            android:text="@string/step1Description"
-            android:textSize="12sp" />
-        <!-- Step1_end -->
-
-
-        <!-- Step2_start -->
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/background"
-            android:padding="@dimen/titleDim"
-            android:text="@string/step2" />
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="vertical" >
+
+            <!-- Step1_start -->
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                android:padding="@dimen/titleDim"
+                android:text="@string/step1" />
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/contentDim"
+                        android:text="@string/userId"
+                        android:textSize="12sp" />
+
+                    <EditText
+                        android:id="@+id/userId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:minEms="5"
+                        android:padding="@dimen/contentDim" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/contentDim"
+                        android:text="@string/accessToken"
+                        android:textSize="12sp" />
+
+                    <EditText
+                        android:id="@+id/accessToken"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:minEms="5"
+                        android:padding="@dimen/contentDim" />
+                </TableRow>
+            </TableLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/contentDim"
-                android:text="@string/documentId"
+                android:text="@string/step1Description"
                 android:textSize="12sp" />
+            <!-- Step1_end -->
 
-            <EditText
-                android:id="@+id/docId"
+
+            <!-- Step2_start -->
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                android:padding="@dimen/titleDim"
+                android:text="@string/step2" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/contentDim"
+                    android:text="@string/documentId"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/docId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:minEms="5"
+                    android:padding="@dimen/contentDim" />
+            </LinearLayout>
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:minEms="5"
-                android:padding="@dimen/contentDim" />
+                android:padding="@dimen/contentDim"
+                android:text="@string/step2Description"
+                android:textSize="12sp" />
+            <!-- Step2_end -->
+
+
+            <!-- Step3_start -->
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                android:padding="@dimen/titleDim"
+                android:text="@string/step3" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/contentDim"
+                android:text="@string/step3Description"
+                android:textSize="12sp" />
+            <!-- Step3_end -->
+
+
+            <!-- Step4_start -->
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                android:padding="@dimen/titleDim"
+                android:text="@string/step4" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/contentDim"
+                android:text="@string/step4Description"
+                android:textSize="12sp" />
+            <!-- Step4_end -->
+
+
+            <!-- Collaborative strings -->
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                android:padding="@dimen/titleDim"
+                android:text="@string/CollaborativeStrings" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/contentDim"
+                android:text="@string/CollaborativeStringsDescription"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                android:padding="@dimen/titleDim"
+                android:text="@string/CollaborativeStringsEdit" />
+
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="41dp"
+                android:ems="10"
+                android:inputType="textMultiLine" >
+
+                <requestFocus />
+            </EditText>
+            <!-- Collaborative strings end -->
         </LinearLayout>
+    </ScrollView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/contentDim"
-            android:text="@string/step2Description"
-            android:textSize="12sp" />
-        <!-- Step2_end -->
-
-
-        <!-- Step3_start -->
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/background"
-            android:padding="@dimen/titleDim"
-            android:text="@string/step3" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/contentDim"
-            android:text="@string/step3Description"
-            android:textSize="12sp" />
-        <!-- Step3_end -->
-
-
-        <!-- Step4_start -->
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/background"
-            android:padding="@dimen/titleDim"
-            android:text="@string/step4" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/contentDim"
-            android:text="@string/step4Description"
-            android:textSize="12sp" />
-        <!-- Step4_end -->
-
-
-        <!-- Collaborative strings -->
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/background"
-            android:padding="@dimen/titleDim"
-            android:text="@string/CollaborativeStrings" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/contentDim"
-            android:text="@string/CollaborativeStringsDescription"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/background"
-            android:padding="@dimen/titleDim"
-            android:text="@string/CollaborativeStringsEdit" />
-
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="41dp"
-            android:ems="10"
-            android:inputType="textMultiLine" >
-
-            <requestFocus />
-        </EditText>
-        <!-- Collaborative strings end -->
-    </LinearLayout>
-
-</ScrollView>
+</FrameLayout>

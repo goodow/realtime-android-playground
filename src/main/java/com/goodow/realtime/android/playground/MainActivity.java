@@ -17,6 +17,7 @@ import com.goodow.realtime.CollaborativeMap;
 import com.goodow.realtime.CollaborativeString;
 import com.goodow.realtime.Document;
 import com.goodow.realtime.DocumentLoadedHandler;
+import com.goodow.realtime.DocumentSaveStateChangedEvent;
 import com.goodow.realtime.EventHandler;
 import com.goodow.realtime.Model;
 import com.goodow.realtime.ModelInitializerHandler;
@@ -29,7 +30,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
@@ -46,6 +49,8 @@ public class MainActivity extends RoboActivity {
   EditText docIdText;
   @InjectView(R.id.editText)
   EditText stringText;
+  @InjectView(R.id.pb_indeterminate)
+  private ProgressBar pbIndeterminate;
 
   private final RealtimeModel stringModel = new RealtimeModel() {
     private static final String STR_KEY = "demo_string";
@@ -135,6 +140,22 @@ public class MainActivity extends RoboActivity {
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
       @Override
       public void onLoaded(Document document) {
+        document.addDocumentSaveStateListener(new EventHandler<DocumentSaveStateChangedEvent>() {
+          @Override
+          public void handleEvent(DocumentSaveStateChangedEvent event) {
+            boolean isSaving = event.isSaving();
+            boolean isPending = event.isPending();
+            if (isSaving == true) {
+              // 正在联网中,显示progressbar
+              pbIndeterminate.setVisibility(View.VISIBLE);
+            }
+            if (isSaving == false && isPending == false) {
+              // 联网完成,隐藏progressbar
+              pbIndeterminate.setVisibility(View.GONE);
+            }
+          }
+        });
+
         doc = document;
         mod = doc.getModel();
         root = mod.getRoot();
