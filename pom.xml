@@ -8,7 +8,6 @@
   </parent>
   <artifactId>realtime-android-playground</artifactId>
   <packaging>apk</packaging>
-  <version>0.0.1-SNAPSHOT</version>
   <url>https://github.com/goodow/realtime-android-playground/</url>
   <inceptionYear>2013</inceptionYear>
 
@@ -21,7 +20,7 @@
     <dependency>
       <groupId>com.goodow.realtime</groupId>
       <artifactId>realtime-android</artifactId>
-      <version>${project.parent.version}</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
   
