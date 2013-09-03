@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:layout_marginBottom="-8.0dip"
-        android:layout_marginTop="-6.0dip" 
+        android:layout_marginTop="-7.0dip" 
         android:visibility="gone"/>
 
     <ScrollView
