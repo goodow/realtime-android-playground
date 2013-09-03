@@ -102,6 +102,7 @@ public class MainActivity extends RoboActivity {
       stringText.setText(str.getText());
     }
   };
+  protected int i = 1;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -129,6 +130,7 @@ public class MainActivity extends RoboActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    pbIndeterminate.setVisibility(View.VISIBLE);
     ActionBar actionBar = this.getActionBar();
     actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
 
@@ -140,6 +142,11 @@ public class MainActivity extends RoboActivity {
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
       @Override
       public void onLoaded(Document document) {
+        // 只回收这一次
+        if (i == 1) {
+          i--;
+          pbIndeterminate.setVisibility(View.GONE);
+        }
         document.addDocumentSaveStateListener(new EventHandler<DocumentSaveStateChangedEvent>() {
           @Override
           public void handleEvent(DocumentSaveStateChangedEvent event) {
