@@ -33,7 +33,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
@@ -115,12 +114,14 @@ public class MainActivity extends RoboActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case R.id.menu_redo:
-        // TODO:redo
-        Toast.makeText(this, "redo", 0).show();
+        if (mod.canRedo()) {
+          mod.redo();
+        }
         break;
-      // TODO:undo
       case R.id.menu_undo:
-        Toast.makeText(this, "undo", 0).show();
+        if (mod.canUndo()) {
+          mod.undo();
+        }
         break;
     }
     return super.onOptionsItemSelected(item);
@@ -130,7 +131,6 @@ public class MainActivity extends RoboActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    pbIndeterminate.setVisibility(View.VISIBLE);
     ActionBar actionBar = this.getActionBar();
     actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
 
