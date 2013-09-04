@@ -28,6 +28,7 @@ import android.app.ActionBar;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -101,7 +102,6 @@ public class MainActivity extends RoboActivity {
       stringText.setText(str.getText());
     }
   };
-  protected int i = 1;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -131,9 +131,11 @@ public class MainActivity extends RoboActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    pbIndeterminate.setVisibility(View.VISIBLE);
+    Log.i("MainActivity", "显示进度条oncreate");
     ActionBar actionBar = this.getActionBar();
     actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
-
+    pbIndeterminate.setVisibility(View.VISIBLE);
     userIdText.setText("688185492143008835447");
     accessTokenText.setText("68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
     docIdText.setText("@tmp/demo");
@@ -142,11 +144,8 @@ public class MainActivity extends RoboActivity {
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
       @Override
       public void onLoaded(Document document) {
-        // 只回收这一次
-        if (i == 1) {
-          i--;
-          pbIndeterminate.setVisibility(View.GONE);
-        }
+        pbIndeterminate.setVisibility(View.GONE);
+        Log.i("MainActivity", "隐藏进度条onLoad");
         document.addDocumentSaveStateListener(new EventHandler<DocumentSaveStateChangedEvent>() {
           @Override
           public void handleEvent(DocumentSaveStateChangedEvent event) {
@@ -155,10 +154,12 @@ public class MainActivity extends RoboActivity {
             if (isSaving == true) {
               // 正在联网中,显示progressbar
               pbIndeterminate.setVisibility(View.VISIBLE);
+              Log.i("MainActivity", "显示进度条");
             }
             if (isSaving == false && isPending == false) {
               // 联网完成,隐藏progressbar
               pbIndeterminate.setVisibility(View.GONE);
+              Log.i("MainActivity", "隐藏进度条");
             }
           }
         });

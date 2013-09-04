@@ -1,16 +1,22 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent" 
+    android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/pb_indeterminate"
-        style="@style/ProgressBarIndeterminate"
+    <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:layout_marginBottom="-8.0dip"
-        android:layout_marginTop="-7.0dip" 
-        />
+        android:layout_height="wrap_content" >
+
+        <ProgressBar
+            android:id="@+id/pb_indeterminate"
+            style="@style/ProgressBarIndeterminate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginBottom="-8.0dip"
+            android:layout_marginTop="-7.0dip"
+            android:visibility="gone" />
+    </FrameLayout>
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -192,4 +198,4 @@
         </LinearLayout>
     </ScrollView>
 
-</FrameLayout>
+</LinearLayout>
