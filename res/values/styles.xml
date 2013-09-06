@@ -17,5 +17,8 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    <style name="ProgressBarIndeterminate" parent="@android:style/Widget.Holo.Light.ProgressBar.Horizontal">
+        <item name="android:indeterminateOnly">true</item>
+    </style>
 
 </resources>

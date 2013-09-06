@@ -17,6 +17,7 @@ import com.goodow.realtime.CollaborativeMap;
 import com.goodow.realtime.CollaborativeString;
 import com.goodow.realtime.Document;
 import com.goodow.realtime.DocumentLoadedHandler;
+import com.goodow.realtime.DocumentSaveStateChangedEvent;
 import com.goodow.realtime.EventHandler;
 import com.goodow.realtime.Model;
 import com.goodow.realtime.ModelInitializerHandler;
@@ -29,7 +30,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
@@ -45,6 +48,22 @@ public class MainActivity extends RoboActivity {
   EditText docIdText;
   @InjectView(R.id.editText)
   EditText stringText;
+  @InjectView(R.id.pb_indeterminate)
+  private ProgressBar pbIndeterminate;
+
+  private final EventHandler<DocumentSaveStateChangedEvent> saveStateHandler =
+      new EventHandler<DocumentSaveStateChangedEvent>() {
+        @Override
+        public void handleEvent(DocumentSaveStateChangedEvent event) {
+          if (event.isSaving || event.isPending) {
+            // 正在联网中,显示progressbar
+            pbIndeterminate.setVisibility(View.VISIBLE);
+          } else {
+            // 联网完成,隐藏progressbar
+            pbIndeterminate.setVisibility(View.GONE);
+          }
+        }
+      };
 
   private final RealtimeModel stringModel = new RealtimeModel() {
     private static final String STR_KEY = "demo_string";
@@ -130,12 +149,15 @@ public class MainActivity extends RoboActivity {
 
     userIdText.setText("688185492143008835447");
     accessTokenText.setText("68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
-    docIdText.setText("@tmp/demo3");
+    docIdText.setText("@tmp/demo");
 
     Realtime.authorize(userIdText.getText().toString(), accessTokenText.getText().toString());
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
       @Override
       public void onLoaded(Document document) {
+        pbIndeterminate.setVisibility(View.GONE);
+        document.addDocumentSaveStateListener(saveStateHandler);
+
         doc = document;
         mod = doc.getModel();
         root = mod.getRoot();
@@ -151,6 +173,8 @@ public class MainActivity extends RoboActivity {
         stringModel.initializeModel();
       }
     };
+    pbIndeterminate.setVisibility(View.VISIBLE);
+
     Realtime.load(docIdText.getText().toString(), onLoaded, opt_initializer, null);
   }
 
