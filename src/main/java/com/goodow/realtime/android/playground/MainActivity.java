@@ -24,6 +24,11 @@ import com.goodow.realtime.ModelInitializerHandler;
 import com.goodow.realtime.ObjectChangedEvent;
 import com.goodow.realtime.Realtime;
 
+import com.google.api.client.http.HttpTransport;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import android.app.ActionBar;
 import android.os.Bundle;
 import android.text.Editable;
@@ -37,6 +42,10 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 public class MainActivity extends RoboActivity {
+  static {
+    // To enable logging of HTTP requests and responses (including URL, headers, and content)
+    Logger.getLogger(HttpTransport.class.getName()).setLevel(Level.CONFIG);
+  }
   private Document doc;
   private Model mod;
   private CollaborativeMap root;
