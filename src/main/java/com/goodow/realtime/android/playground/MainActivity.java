@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -38,6 +39,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
@@ -124,6 +126,24 @@ public class MainActivity extends RoboActivity {
       stringText.setText(str.getText());
     }
   };
+
+  /**
+   * CollaborativeLists
+   * 
+   * @param view
+   */
+  public void CollaborativeListsButton(View view) {
+    startActivity(new Intent(this, CollaborativeListActivity.class));
+  }
+
+  /**
+   * CollaborativeMaps
+   * 
+   * @param view
+   */
+  public void CollaborativeMapsButton(View view) {
+    Toast.makeText(this, "CollaborativeMapsButton", 1).show();
+  }
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {

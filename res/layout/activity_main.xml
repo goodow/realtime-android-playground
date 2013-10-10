@@ -191,10 +191,72 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textMultiLine" >
-
                 <requestFocus />
             </EditText>
             <!-- Collaborative strings end -->
+
+
+            <!-- Collaborative lists -->
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                android:padding="@dimen/titleDim"
+                android:text="@string/CollaborativeLists" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/contentDim"
+                android:text="@string/CollaborativeListsDescription"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                android:padding="@dimen/titleDim"
+                android:text="@string/CollaborativeListsEdit" />
+
+            <Button
+                android:onClick="CollaborativeListsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/CollaborativeListsButton" 
+                />
+            <!-- Collaborative lists end -->
+            
+            <!-- Collaborative maps -->
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                android:padding="@dimen/titleDim"
+                android:text="@string/CollaborativeMaps" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/contentDim"
+                android:text="@string/CollaborativeMapsDescription"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                android:padding="@dimen/titleDim"
+                android:text="@string/CollaborativeMapsEdit" />
+
+            <Button
+                android:onClick="CollaborativeMapsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/CollaborativeMapsButton" 
+                />
+            <!-- Collaborative maps end -->
         </LinearLayout>
     </ScrollView>
 
