@@ -11,8 +11,6 @@ import com.goodow.realtime.ModelInitializerHandler;
 import com.goodow.realtime.ObjectChangedEvent;
 import com.goodow.realtime.Realtime;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -103,6 +101,8 @@ public class CollaborativeListsActivity extends RoboActivity {
   Button bt_removeSelectItem;
   @InjectView(R.id.bt_clearTheList)
   Button bt_clearTheList;
+  @InjectView(R.id.bt_setSelectItem)
+  Button bt_setSelectItem;
 
   private final RealtimeModel ListModel = new RealtimeModel() {
     private static final String List_KEY = "demo_list";
@@ -130,7 +130,7 @@ public class CollaborativeListsActivity extends RoboActivity {
         @Override
         public void onClick(View v) {
           String addAnItem = AddAnItem.getText().toString().trim();
-          if (StringUtils.isNotBlank(addAnItem)) {
+          if (AddAnItem != null) {
             // CollaborativeList里面添加一个元素,添加到结尾
             list.insert(list.length(), addAnItem);
             // 在ArrayList结尾增加一个元素
@@ -171,6 +171,14 @@ public class CollaborativeListsActivity extends RoboActivity {
             // 更新适配器
             adapter.notifyDataSetChanged();
           }
+        }
+      });
+      bt_setSelectItem.setOnClickListener(new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+          arrayList.set(selectPosition, selectItem.getText().toString());
+          adapter.notifyDataSetChanged();
         }
       });
     }

@@ -10,8 +10,6 @@ import com.goodow.realtime.ModelInitializerHandler;
 import com.goodow.realtime.ObjectChangedEvent;
 import com.goodow.realtime.Realtime;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Arrays;
 
 import android.app.ActionBar;
@@ -170,7 +168,7 @@ public class CollaborativeMapsActivity extends RoboActivity {
           String value = itemValue.getText().toString();
           String key = itemKey.getText().toString();
           // key is not blank
-          if (StringUtils.isNotBlank(key)) {
+          if (key != null) {
             adapter.addItem(key, value);
             map.set(key, value);
           }
@@ -181,8 +179,8 @@ public class CollaborativeMapsActivity extends RoboActivity {
         @Override
         public void onClick(View v) {
           String value = itemValue.getText().toString().trim();
-          String key = itemKey.getText().toString();
-          if (StringUtils.isNotBlank(key)) {
+          String key = itemKey.getText().toString().trim();
+          if (key != null) {
             // 移除前，判断是否存在,值考虑是否相等，是否同时为空
             // String[] strings = map.keys();
             // List<String> list = Arrays.asList(strings);
