@@ -39,7 +39,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
@@ -133,7 +132,7 @@ public class MainActivity extends RoboActivity {
    * @param view
    */
   public void CollaborativeListsButton(View view) {
-    startActivity(new Intent(this, CollaborativeListActivity.class));
+    startActivity(new Intent(this, CollaborativeListsActivity.class));
   }
 
   /**
@@ -142,7 +141,7 @@ public class MainActivity extends RoboActivity {
    * @param view
    */
   public void CollaborativeMapsButton(View view) {
-    Toast.makeText(this, "CollaborativeMapsButton", 1).show();
+    startActivity(new Intent(this, CollaborativeMapsActivity.class));
   }
 
   @Override

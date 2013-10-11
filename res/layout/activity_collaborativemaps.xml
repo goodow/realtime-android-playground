@@ -8,7 +8,7 @@
         android:layout_height="wrap_content" >
 
         <ProgressBar
-            android:id="@+id/pb_indeterminateList"
+            android:id="@+id/pb_indeterminateMap"
             style="@style/ProgressBarIndeterminate"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -20,14 +20,26 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:layout_height="match_parent" 
+        android:orientation="vertical">
 
         <Button
-            android:id="@+id/bt_removeSelectItem"
+            android:id="@+id/bt_removeSelectMap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/RemoveSelectItem" />
+
+        <Button
+            android:id="@+id/bt_clearTheMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ClearTheMap" />
+
+        <Button
+            android:id="@+id/bt_putKeyAndValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/PutKeyAndValue" />
 
         <TableLayout
             android:layout_width="match_parent"
@@ -35,41 +47,29 @@
 
             <TableRow>
 
-                <Button
-                    android:id="@+id/bt_addAnItem"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/AddAnItem" />
+                    android:text="Key:" />
 
                 <EditText
-                    android:id="@+id/AddAnItem"
+                    android:id="@+id/itemKey"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:minEms="5"
                     android:padding="@dimen/contentDim" />
             </TableRow>
-        </TableLayout>
-
-        <Button
-            android:id="@+id/bt_clearTheList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/ClearTheList" />
-
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
 
             <TableRow>
 
-                <Button
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/SetSelectItemValue" />
+                    android:text="Value:" />
 
                 <EditText
-                    android:id="@+id/selectItem"
+                    android:id="@+id/itemValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:inputType="text"
@@ -82,15 +82,31 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
 
-            <ListView
-                android:id="@+id/CollaborativeList"
-                android:layout_width="fill_parent"
+            <TextView
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/style_list_background"
-                android:divider="#000000"
-                android:dividerHeight="1dp" />
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="Keys"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="Values"
+                android:textSize="12sp" />
         </LinearLayout>
+
+        <ListView
+            android:id="@+id/CollaborativeMap"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/style_list_background"
+            android:divider="#000000"
+            android:dividerHeight="1dp" />
     </LinearLayout>
 
 </FrameLayout>

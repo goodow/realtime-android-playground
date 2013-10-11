@@ -64,7 +64,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.goodow.realtime.android.playground.CollaborativeListActivity"></activity>
+        <activity android:name="com.goodow.realtime.android.playground.CollaborativeListsActivity"></activity>
+        <activity android:name="com.goodow.realtime.android.playground.CollaborativeMapsActivity"></activity>
     </application>
 
 </manifest>
