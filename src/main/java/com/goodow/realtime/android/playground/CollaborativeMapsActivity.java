@@ -49,6 +49,7 @@ public class CollaborativeMapsActivity extends RoboActivity {
     TextView keys;
     TextView values;
   }
+
   private class MapAdapter extends BaseAdapter {
     private CollaborativeMap collaborativeMap;
 
@@ -151,7 +152,7 @@ public class CollaborativeMapsActivity extends RoboActivity {
         }
       };
   private final RealtimeModel MapModel = new RealtimeModel() {
-    private static final String Map_KEY = "demo_map";
+    private static final String MAP_KEY = "demo_map";
     private CollaborativeMap map;
 
     @Override
@@ -171,11 +172,11 @@ public class CollaborativeMapsActivity extends RoboActivity {
         @Override
         public void onClick(View v) {
           String value = itemValue.getText().toString();
-          String key = itemKey.getText().toString();
+          String key = itemKey.getText().toString().trim();
           // key is not blank
           if (key != null) {
             adapter.addItem(key, value);
-            map.set(key, value);
+            // map.set(key, value);
           }
         }
 
@@ -190,7 +191,7 @@ public class CollaborativeMapsActivity extends RoboActivity {
               if (value != null && value.equals(map.get(key))
                   || (value == null && map.get(key) == null)) {
                 adapter.removeItem(key);
-                map.remove(key);
+                // map.remove(key);
               }
 
             }
@@ -201,7 +202,7 @@ public class CollaborativeMapsActivity extends RoboActivity {
       bt_clearTheMap.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          map.clear();
+          // map.clear();
           adapter.clear();
         }
 
@@ -214,12 +215,12 @@ public class CollaborativeMapsActivity extends RoboActivity {
       map.set("1", "a");
       map.set("2", "b");
       map.set("3", "c");
-      root.set(Map_KEY, map);
+      root.set(MAP_KEY, map);
     }
 
     @Override
     public void loadField() {
-      map = root.get(Map_KEY);
+      map = root.get(MAP_KEY);
     }
 
     @Override
@@ -260,7 +261,6 @@ public class CollaborativeMapsActivity extends RoboActivity {
     ActionBar actionBar = this.getActionBar();
     actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
     actionBar.setTitle("CollabrativeMaps Demo");
-    Realtime.authorize("688185492143008835447", "68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
       @Override
       public void onLoaded(Document document) {

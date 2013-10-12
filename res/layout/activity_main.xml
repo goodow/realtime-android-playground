@@ -172,7 +172,7 @@
                 android:text="@string/CollaborativeStringsEdit" />
 
             <Button
-                android:onClick="CollaborativeStringsButton"
+                android:onClick="collaborativeStringsButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/CollaborativeStringsButton" 
@@ -204,7 +204,7 @@
                 android:text="@string/CollaborativeListsEdit" />
 
             <Button
-                android:onClick="CollaborativeListsButton"
+                android:onClick="collaborativeListsButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/CollaborativeListsButton" 
@@ -235,7 +235,7 @@
                 android:text="@string/CollaborativeMapsEdit" />
 
             <Button
-                android:onClick="CollaborativeMapsButton"
+                android:onClick="collaborativeMapsButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/CollaborativeMapsButton" 

@@ -24,8 +24,6 @@ import com.goodow.realtime.ModelInitializerHandler;
 import com.goodow.realtime.ObjectChangedEvent;
 import com.goodow.realtime.Realtime;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import android.app.ActionBar;
@@ -47,16 +45,35 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 public class CollaborativeListsActivity extends RoboActivity {
+
   private class ListAdapter extends BaseAdapter {
+    private CollaborativeList collaborativeList;
+
+    public ListAdapter(CollaborativeList collaborativeList) {
+      super();
+      this.collaborativeList = collaborativeList;
+    }
+
+    // add a item
+    public void addItem(String item) {
+      this.collaborativeList.push(item);
+      this.notifyDataSetChanged();
+    }
+
+    public void clear() {
+      this.collaborativeList.clear();
+      this.notifyDataSetChanged();
+    }
 
     @Override
     public int getCount() {
-      return arrayList.size();
+      int count = (collaborativeList == null ? 0 : collaborativeList.length());
+      return count;
     }
 
     @Override
     public Object getItem(int position) {
-      return arrayList.get(position);
+      return collaborativeList.get(position);
     }
 
     @Override
@@ -74,8 +91,22 @@ public class CollaborativeListsActivity extends RoboActivity {
         view = View.inflate(getApplicationContext(), R.layout.collaborativelists_item, null);
       }
       textView = (TextView) view.findViewById(R.id.tv_item);
-      textView.setText(arrayList.get(position));
+      textView.setText((String) collaborativeList.get(position));
       return view;
+    }
+
+    public void removeItem(int index) {
+      this.collaborativeList.remove(index);
+      this.notifyDataSetChanged();
+    }
+
+    public void setCollaborativeList(CollaborativeList collaborativeList) {
+      this.collaborativeList = collaborativeList;
+    }
+
+    public void SetValue(int postion, String item) {
+      this.collaborativeList.set(postion, item);
+      this.notifyDataSetChanged();
     }
   }
 
@@ -116,7 +147,7 @@ public class CollaborativeListsActivity extends RoboActivity {
   Button bt_setSelectItem;
 
   private final RealtimeModel ListModel = new RealtimeModel() {
-    private static final String List_KEY = "demo_list";
+    private static final String LIST_KEY = "demo_list";
     private CollaborativeList list;
 
     @Override
@@ -138,46 +169,41 @@ public class CollaborativeListsActivity extends RoboActivity {
         @Override
         public void onClick(View v) {
           String addAnItem = AddAnItem.getText().toString().trim();
-          if (AddAnItem != null) {
-            // CollaborativeList add an item
-            list.insert(list.length(), addAnItem);
-            // ArrayList add an item
-            arrayList.add(addAnItem);
-            // not
-            adapter.notifyDataSetChanged();
-          }
+          // CollaborativeList add an item
+          list.insert(list.length(), addAnItem);
+          // adapter.addItem(addAnItem);
         }
       });
-      // re
       bt_removeSelectItem.setOnClickListener(new OnClickListener() {
 
         @Override
         public void onClick(View v) {
-          String item = selectItem.getText().toString().trim();
-          // item not null
-          if (arrayList.size() != 0 && item.equals(arrayList.get(selectPosition))) {
-            // CollaborativeList remove an item
-            list.remove(selectPosition);
-            // ArrayList remove an item
-            arrayList.remove(selectPosition);
 
-            adapter.notifyDataSetChanged();
+          if (selectPosition != -1) {
+            String item = selectItem.getText().toString().trim();
+            String realtimeList = list.get(selectPosition);
+            // item not null
+            if (list.length() > 0
+                && ((item != null && item.equals(realtimeList)) || (item == null && realtimeList == null))) {
+              // list.remove(selectPosition);
+              adapter.removeItem(selectPosition);
+              selectPosition = -1;
+            }
           }
 
         }
       });
+
       // clear
       bt_clearTheList.setOnClickListener(new OnClickListener() {
 
         @Override
         public void onClick(View v) {
-          if (arrayList.size() != 0) {
-            // clear CollaborativeList
-            list.clear();
-            // clear ArrayList
-            arrayList.clear();
+          if (list.length() != 0) {
+            // list.clear();
+            adapter.clear();
+            selectPosition = -1;
 
-            adapter.notifyDataSetChanged();
           }
         }
       });
@@ -185,8 +211,12 @@ public class CollaborativeListsActivity extends RoboActivity {
 
         @Override
         public void onClick(View v) {
-          arrayList.set(selectPosition, selectItem.getText().toString());
-          adapter.notifyDataSetChanged();
+          if (selectPosition != -1) {
+            String select = selectItem.getText().toString();
+            list.set(selectPosition, select);
+            adapter.SetValue(selectPosition, select);
+            selectPosition = -1;
+          }
         }
       });
     }
@@ -196,21 +226,17 @@ public class CollaborativeListsActivity extends RoboActivity {
       CollaborativeList list = mod.createList();
       list.push("Hello");
       list.push("World");
-      root.set(List_KEY, list);
+      root.set(LIST_KEY, list);
     }
 
     @Override
     public void loadField() {
-      list = root.get(List_KEY);
+      list = root.get(LIST_KEY);
     }
 
     @Override
     public void updateUi() {
-      String[] listString = new String[list.asArray().length];
-      for (int i = 0; i < list.asArray().length; i++) {
-        listString[i] = list.asArray()[i].toString();
-      }
-      arrayList = new ArrayList<String>(Arrays.asList(listString));
+      adapter.setCollaborativeList(list);
       adapter.notifyDataSetChanged();
     }
   };
@@ -248,7 +274,6 @@ public class CollaborativeListsActivity extends RoboActivity {
     ActionBar actionBar = this.getActionBar();
     actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
     actionBar.setTitle("CollabrativeLists Demo");
-    Realtime.authorize("688185492143008835447", "68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
       @Override
       public void onLoaded(Document document) {
@@ -270,14 +295,14 @@ public class CollaborativeListsActivity extends RoboActivity {
     };
     pbIndeterminate.setVisibility(View.VISIBLE);
     Realtime.load("@tmp/demo", onLoaded, opt_initializer, null);
-    arrayList = new ArrayList<String>();
-    adapter = new ListAdapter();
+    adapter = new ListAdapter(null);
     listView.setAdapter(adapter);
     listView.setOnItemClickListener(new OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Object obj = listView.getItemAtPosition(position);
         // Set select item's value
-        selectItem.setText(arrayList.get(position));
+        selectItem.setText((String) obj);
         // save postion
         selectPosition = position;
       }

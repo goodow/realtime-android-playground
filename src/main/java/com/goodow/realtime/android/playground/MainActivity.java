@@ -13,12 +13,13 @@
  */
 package com.goodow.realtime.android.playground;
 
+import com.goodow.realtime.Realtime;
+
 import com.google.api.client.http.HttpTransport;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -27,54 +28,54 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 public class MainActivity extends RoboActivity {
-	static {
-		// To enable logging of HTTP requests and responses (including URL,
-		// headers, and content)
-		Logger.getLogger(HttpTransport.class.getName()).setLevel(Level.CONFIG);
-	}
-	@InjectView(R.id.userId)
-	EditText userIdText;
-	@InjectView(R.id.accessToken)
-	EditText accessTokenText;
-	@InjectView(R.id.docId)
-	EditText docIdText;
+  static {
+    // To enable logging of HTTP requests and responses (including URL,
+    // headers, and content)
+    Logger.getLogger(HttpTransport.class.getName()).setLevel(Level.CONFIG);
+  }
+  @InjectView(R.id.userId)
+  EditText userIdText;
+  @InjectView(R.id.accessToken)
+  EditText accessTokenText;
+  @InjectView(R.id.docId)
+  EditText docIdText;
 
-	/**
-	 * CollaborativeLists
-	 * 
-	 * @param view
-	 */
-	public void CollaborativeListsButton(View view) {
-		startActivity(new Intent(this, CollaborativeListsActivity.class));
-	}
+  /**
+   * CollaborativeLists
+   * 
+   * @param view
+   */
+  public void collaborativeListsButton(View view) {
+    startActivity(new Intent(this, CollaborativeListsActivity.class));
+  }
 
-	/**
-	 * CollaborativeMaps
-	 * 
-	 * @param view
-	 */
-	public void CollaborativeMapsButton(View view) {
-		startActivity(new Intent(this, CollaborativeMapsActivity.class));
-	}
+  /**
+   * CollaborativeMaps
+   * 
+   * @param view
+   */
+  public void collaborativeMapsButton(View view) {
+    startActivity(new Intent(this, CollaborativeMapsActivity.class));
+  }
 
-	/**
-	 * CollaborativeStrings
-	 * 
-	 * @param view
-	 */
-	public void CollaborativeStringsButton(View view) {
-		startActivity(new Intent(this, CollaborativeStringsActivity.class));
-	}
+  /**
+   * CollaborativeStrings
+   * 
+   * @param view
+   */
+  public void collaborativeStringsButton(View view) {
+    startActivity(new Intent(this, CollaborativeStringsActivity.class));
+  }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
-		userIdText.setText("688185492143008835447");
-		accessTokenText.setText("68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
-		docIdText.setText("@tmp/demo");
+    userIdText.setText("688185492143008835447");
+    accessTokenText.setText("68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
+    docIdText.setText("@tmp/demo");
+    Realtime.authorize(userIdText.getText().toString(), accessTokenText.getText().toString());
 
-	}
-
+  }
 }

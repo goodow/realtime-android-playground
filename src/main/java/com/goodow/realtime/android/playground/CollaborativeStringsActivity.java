@@ -138,7 +138,6 @@ public class CollaborativeStringsActivity extends RoboActivity {
     ActionBar actionBar = this.getActionBar();
     actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
     actionBar.setTitle("CollaborativeStrings Demo");
-    Realtime.authorize("688185492143008835447", "68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
       @Override
       public void onLoaded(Document document) {
