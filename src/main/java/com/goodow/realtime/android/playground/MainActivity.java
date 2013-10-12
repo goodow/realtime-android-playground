@@ -13,203 +13,68 @@
  */
 package com.goodow.realtime.android.playground;
 
-import com.goodow.realtime.CollaborativeMap;
-import com.goodow.realtime.CollaborativeString;
-import com.goodow.realtime.Document;
-import com.goodow.realtime.DocumentLoadedHandler;
-import com.goodow.realtime.DocumentSaveStateChangedEvent;
-import com.goodow.realtime.EventHandler;
-import com.goodow.realtime.Model;
-import com.goodow.realtime.ModelInitializerHandler;
-import com.goodow.realtime.ObjectChangedEvent;
-import com.goodow.realtime.Realtime;
-
 import com.google.api.client.http.HttpTransport;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
 public class MainActivity extends RoboActivity {
-  static {
-    // To enable logging of HTTP requests and responses (including URL, headers, and content)
-    Logger.getLogger(HttpTransport.class.getName()).setLevel(Level.CONFIG);
-  }
-  private Document doc;
-  private Model mod;
-  private CollaborativeMap root;
-  @InjectView(R.id.userId)
-  EditText userIdText;
-  @InjectView(R.id.accessToken)
-  EditText accessTokenText;
-  @InjectView(R.id.docId)
-  EditText docIdText;
-  @InjectView(R.id.editText)
-  EditText stringText;
-  @InjectView(R.id.pb_indeterminate)
-  private ProgressBar pbIndeterminate;
+	static {
+		// To enable logging of HTTP requests and responses (including URL,
+		// headers, and content)
+		Logger.getLogger(HttpTransport.class.getName()).setLevel(Level.CONFIG);
+	}
+	@InjectView(R.id.userId)
+	EditText userIdText;
+	@InjectView(R.id.accessToken)
+	EditText accessTokenText;
+	@InjectView(R.id.docId)
+	EditText docIdText;
 
-  private final EventHandler<DocumentSaveStateChangedEvent> saveStateHandler =
-      new EventHandler<DocumentSaveStateChangedEvent>() {
-        @Override
-        public void handleEvent(DocumentSaveStateChangedEvent event) {
-          if (event.isSaving || event.isPending) {
-            // 正在联网中,显示progressbar
-            pbIndeterminate.setVisibility(View.VISIBLE);
-          } else {
-            // 联网完成,隐藏progressbar
-            pbIndeterminate.setVisibility(View.GONE);
-          }
-        }
-      };
+	/**
+	 * CollaborativeLists
+	 * 
+	 * @param view
+	 */
+	public void CollaborativeListsButton(View view) {
+		startActivity(new Intent(this, CollaborativeListsActivity.class));
+	}
 
-  private final RealtimeModel stringModel = new RealtimeModel() {
-    private static final String STR_KEY = "demo_string";
-    private CollaborativeString str;
+	/**
+	 * CollaborativeMaps
+	 * 
+	 * @param view
+	 */
+	public void CollaborativeMapsButton(View view) {
+		startActivity(new Intent(this, CollaborativeMapsActivity.class));
+	}
 
-    @Override
-    public void connectRealtime() {
-      str.addObjectChangedListener(new EventHandler<ObjectChangedEvent>() {
-        @Override
-        public void handleEvent(ObjectChangedEvent event) {
-          // if (!event.isLocal) {
-          updateUi();
-          // }
-        }
-      });
-    }
+	/**
+	 * CollaborativeStrings
+	 * 
+	 * @param view
+	 */
+	public void CollaborativeStringsButton(View view) {
+		startActivity(new Intent(this, CollaborativeStringsActivity.class));
+	}
 
-    @Override
-    public void connectUi() {
-      stringText.addTextChangedListener(new TextWatcher() {
-        @Override
-        public void afterTextChanged(Editable arg0) {
-        }
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
 
-        @Override
-        public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-        }
+		userIdText.setText("688185492143008835447");
+		accessTokenText.setText("68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
+		docIdText.setText("@tmp/demo");
 
-        @Override
-        public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-          str.setText(stringText.getText().toString());
-        }
-      });
-    }
+	}
 
-    @Override
-    public void initializeModel() {
-      CollaborativeString string = mod.createString("Edit Me!");
-      root.set(STR_KEY, string);
-    }
-
-    @Override
-    public void loadField() {
-      str = root.get(STR_KEY);
-    }
-
-    @Override
-    public void updateUi() {
-      stringText.setText(str.getText());
-    }
-  };
-
-  /**
-   * CollaborativeLists
-   * 
-   * @param view
-   */
-  public void CollaborativeListsButton(View view) {
-    startActivity(new Intent(this, CollaborativeListsActivity.class));
-  }
-
-  /**
-   * CollaborativeMaps
-   * 
-   * @param view
-   */
-  public void CollaborativeMapsButton(View view) {
-    startActivity(new Intent(this, CollaborativeMapsActivity.class));
-  }
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.main, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.menu_undo:
-        if (mod.canUndo()) {
-          mod.undo();
-        }
-        break;
-      case R.id.menu_redo:
-        if (mod.canRedo()) {
-          mod.redo();
-        }
-        break;
-    }
-    return super.onOptionsItemSelected(item);
-  }
-
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-    ActionBar actionBar = this.getActionBar();
-    actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
-
-    userIdText.setText("688185492143008835447");
-    accessTokenText.setText("68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
-    docIdText.setText("@tmp/demo");
-
-    Realtime.authorize(userIdText.getText().toString(), accessTokenText.getText().toString());
-    DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
-      @Override
-      public void onLoaded(Document document) {
-        pbIndeterminate.setVisibility(View.GONE);
-        document.addDocumentSaveStateListener(saveStateHandler);
-
-        doc = document;
-        mod = doc.getModel();
-        root = mod.getRoot();
-
-        connectString();
-      }
-    };
-    ModelInitializerHandler opt_initializer = new ModelInitializerHandler() {
-      @Override
-      public void onInitializer(Model model) {
-        mod = model;
-        root = mod.getRoot();
-        stringModel.initializeModel();
-      }
-    };
-    pbIndeterminate.setVisibility(View.VISIBLE);
-
-    Realtime.load(docIdText.getText().toString(), onLoaded, opt_initializer, null);
-  }
-
-  private void connectString() {
-    stringModel.loadField();
-    stringModel.updateUi();
-    stringModel.connectUi();
-    stringModel.connectRealtime();
-  }
 }

@@ -1,3 +1,16 @@
+/*
+ * Copyright 2012 Goodow.com
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.goodow.realtime.android.playground;
 
 import com.goodow.realtime.CollaborativeList;
@@ -71,10 +84,8 @@ public class CollaborativeListsActivity extends RoboActivity {
         @Override
         public void handleEvent(DocumentSaveStateChangedEvent event) {
           if (event.isSaving || event.isPending) {
-            // 正在联网中,显示progressbar
             pbIndeterminate.setVisibility(View.VISIBLE);
           } else {
-            // 联网完成,隐藏progressbar
             pbIndeterminate.setVisibility(View.GONE);
           }
         }
@@ -119,56 +130,53 @@ public class CollaborativeListsActivity extends RoboActivity {
 
     }
 
-    /**
-     * 此处添加item,删除item,并且更新UI
-     */
     @Override
     public void connectUi() {
-      // 添加一个item
+      // add an item
       bt_addAnItem.setOnClickListener(new OnClickListener() {
 
         @Override
         public void onClick(View v) {
           String addAnItem = AddAnItem.getText().toString().trim();
           if (AddAnItem != null) {
-            // CollaborativeList里面添加一个元素,添加到结尾
+            // CollaborativeList add an item
             list.insert(list.length(), addAnItem);
-            // 在ArrayList结尾增加一个元素
+            // ArrayList add an item
             arrayList.add(addAnItem);
-            // 更新适配器
+            // not
             adapter.notifyDataSetChanged();
           }
         }
       });
-      // 清除一个item,此处有位置
+      // re
       bt_removeSelectItem.setOnClickListener(new OnClickListener() {
 
         @Override
         public void onClick(View v) {
           String item = selectItem.getText().toString().trim();
-          // item不为空白
+          // item not null
           if (arrayList.size() != 0 && item.equals(arrayList.get(selectPosition))) {
-            // CollaborativeList里面移除一个元素
+            // CollaborativeList remove an item
             list.remove(selectPosition);
-            // 在ArrayList里面移除一个元素
+            // ArrayList remove an item
             arrayList.remove(selectPosition);
-            // 更新适配器
+
             adapter.notifyDataSetChanged();
           }
 
         }
       });
-      // 清除所有的item
+      // clear
       bt_clearTheList.setOnClickListener(new OnClickListener() {
 
         @Override
         public void onClick(View v) {
           if (arrayList.size() != 0) {
-            // 移除CollaborativeList里面的元素
+            // clear CollaborativeList
             list.clear();
-            // 在ArrayList里面的元素
+            // clear ArrayList
             arrayList.clear();
-            // 更新适配器
+
             adapter.notifyDataSetChanged();
           }
         }
@@ -196,7 +204,6 @@ public class CollaborativeListsActivity extends RoboActivity {
       list = root.get(List_KEY);
     }
 
-    // 将服务器传过来的数据，展示到界面,更新adapter
     @Override
     public void updateUi() {
       String[] listString = new String[list.asArray().length];
@@ -204,7 +211,6 @@ public class CollaborativeListsActivity extends RoboActivity {
         listString[i] = list.asArray()[i].toString();
       }
       arrayList = new ArrayList<String>(Arrays.asList(listString));
-      // TODO更新适配器
       adapter.notifyDataSetChanged();
     }
   };
@@ -241,7 +247,7 @@ public class CollaborativeListsActivity extends RoboActivity {
     setContentView(R.layout.activity_collaborativelists);
     ActionBar actionBar = this.getActionBar();
     actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
-
+    actionBar.setTitle("CollabrativeLists Demo");
     Realtime.authorize("688185492143008835447", "68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
       @Override

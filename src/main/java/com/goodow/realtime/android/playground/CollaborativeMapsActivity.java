@@ -1,3 +1,16 @@
+/*
+ * Copyright 2012 Goodow.com
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.goodow.realtime.android.playground;
 
 import com.goodow.realtime.CollaborativeMap;
@@ -65,10 +78,6 @@ public class CollaborativeMapsActivity extends RoboActivity {
 
     @Override
     public Object getItem(int position) {
-      // Map map = new HashMap<String, String>();
-      // map.put(collaborativeMap.keys()[position], collaborativeMap
-      // .get(collaborativeMap.keys()[position]));
-      // return map;
       String[] string = new String[2];
       string[0] = collaborativeMap.keys()[position];
       string[1] = collaborativeMap.get(collaborativeMap.keys()[position]);
@@ -114,7 +123,6 @@ public class CollaborativeMapsActivity extends RoboActivity {
   private Model mod;
   private CollaborativeMap root;
 
-  private CollaborativeMap mMap;
   private MapAdapter adapter;
 
   @InjectView(R.id.CollaborativeMap)
@@ -136,10 +144,8 @@ public class CollaborativeMapsActivity extends RoboActivity {
         @Override
         public void handleEvent(DocumentSaveStateChangedEvent event) {
           if (event.isSaving || event.isPending) {
-            // 正在联网中,显示progressbar
             pbIndeterminate.setVisibility(View.VISIBLE);
           } else {
-            // 联网完成,隐藏progressbar
             pbIndeterminate.setVisibility(View.GONE);
           }
         }
@@ -161,7 +167,6 @@ public class CollaborativeMapsActivity extends RoboActivity {
 
     @Override
     public void connectUi() {
-      // 添加一个key和value
       bt_putKeyAndValue.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -181,10 +186,6 @@ public class CollaborativeMapsActivity extends RoboActivity {
           String value = itemValue.getText().toString().trim();
           String key = itemKey.getText().toString().trim();
           if (key != null) {
-            // 移除前，判断是否存在,值考虑是否相等，是否同时为空
-            // String[] strings = map.keys();
-            // List<String> list = Arrays.asList(strings);
-            // boolean isHave = list.contains(key);
             if (Arrays.asList(map.keys()).contains(key)) {
               if (value != null && value.equals(map.get(key))
                   || (value == null && map.get(key) == null)) {
@@ -223,9 +224,7 @@ public class CollaborativeMapsActivity extends RoboActivity {
 
     @Override
     public void updateUi() {
-      // mMap = map;
       adapter.setCollaborativeMap(map);
-      // 更新适配器
       adapter.notifyDataSetChanged();
     }
   };
@@ -260,7 +259,7 @@ public class CollaborativeMapsActivity extends RoboActivity {
     setContentView(R.layout.activity_collaborativemaps);
     ActionBar actionBar = this.getActionBar();
     actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
-
+    actionBar.setTitle("CollabrativeMaps Demo");
     Realtime.authorize("688185492143008835447", "68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
       @Override
@@ -289,17 +288,6 @@ public class CollaborativeMapsActivity extends RoboActivity {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Object obj = listView.getItemAtPosition(position);
-        // if (obj != null) {
-        // HashMap<String, String> map = (HashMap<String, String>) obj;
-        // Set set = map.entrySet();
-        // Iterator iterator = set.iterator();
-        // while (iterator.hasNext()) {
-        // Map.Entry<String, String> mapEntry = (Entry<String, String>) iterator.next();
-        // itemKey.setText(mapEntry.getKey());
-        // itemValue.setText(mapEntry.getValue());
-        // }
-        //
-        // }
         if (obj != null) {
           String[] item = (String[]) obj;
           itemKey.setText(item[0]);

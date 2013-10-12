@@ -3,20 +3,6 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-
-        <ProgressBar
-            android:id="@+id/pb_indeterminate"
-            style="@style/ProgressBarIndeterminate"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:layout_marginBottom="-8.0dip"
-            android:layout_marginTop="-6.0dip"
-            android:visibility="gone" />
-    </FrameLayout>
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -185,14 +171,12 @@
                 android:padding="@dimen/titleDim"
                 android:text="@string/CollaborativeStringsEdit" />
 
-            <EditText
-                android:id="@+id/editText"
-                android:layout_width="fill_parent"
+            <Button
+                android:onClick="CollaborativeStringsButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textMultiLine" >
-                <requestFocus />
-            </EditText>
+                android:text="@string/CollaborativeStringsButton" 
+                />
             <!-- Collaborative strings end -->
 
 

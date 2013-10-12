@@ -66,6 +66,7 @@
         </activity>
         <activity android:name="com.goodow.realtime.android.playground.CollaborativeListsActivity"></activity>
         <activity android:name="com.goodow.realtime.android.playground.CollaborativeMapsActivity"></activity>
+        <activity android:name="com.goodow.realtime.android.playground.CollaborativeStringsActivity"></activity>
     </application>
 
 </manifest>
