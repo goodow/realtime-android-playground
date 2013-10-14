@@ -20,7 +20,6 @@ import com.goodow.realtime.DocumentLoadedHandler;
 import com.goodow.realtime.DocumentSaveStateChangedEvent;
 import com.goodow.realtime.EventHandler;
 import com.goodow.realtime.Model;
-import com.goodow.realtime.ModelInitializerHandler;
 import com.goodow.realtime.ObjectChangedEvent;
 import com.goodow.realtime.Realtime;
 
@@ -96,12 +95,6 @@ public class CollaborativeStringsActivity extends RoboActivity {
       });
     }
 
-    // @Override
-    // public void initializeModel() {
-    // CollaborativeString string = mod.createString("Edit Me!");
-    // root.set(STR_KEY, string);
-    // }
-
     @Override
     public void loadField() {
       str = root.get(STR_KEY);
@@ -143,7 +136,7 @@ public class CollaborativeStringsActivity extends RoboActivity {
     setContentView(R.layout.activity_collaborativestrings);
     ActionBar actionBar = this.getActionBar();
     actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
-    actionBar.setTitle("CollaborativeStrings Demo");
+    actionBar.setTitle("Collaborative Strings Demo");
     DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
       @Override
       public void onLoaded(Document document) {
@@ -157,17 +150,9 @@ public class CollaborativeStringsActivity extends RoboActivity {
         connectString();
       }
     };
-    ModelInitializerHandler opt_initializer = new ModelInitializerHandler() {
-      @Override
-      public void onInitializer(Model model) {
-        // mod = model;
-        // root = mod.getRoot();
-        // stringModel.initializeModel();
-      }
-    };
     pbIndeterminate.setVisibility(View.VISIBLE);
 
-    Realtime.load(ConstantValues.documentId, onLoaded, opt_initializer, null);
+    Realtime.load(ConstantValues.documentId, onLoaded, null, null);
   }
 
   private void connectString() {
