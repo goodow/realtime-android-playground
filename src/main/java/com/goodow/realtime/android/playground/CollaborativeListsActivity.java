@@ -20,11 +20,8 @@ import com.goodow.realtime.DocumentLoadedHandler;
 import com.goodow.realtime.DocumentSaveStateChangedEvent;
 import com.goodow.realtime.EventHandler;
 import com.goodow.realtime.Model;
-import com.goodow.realtime.ModelInitializerHandler;
 import com.goodow.realtime.ObjectChangedEvent;
 import com.goodow.realtime.Realtime;
-
-import java.util.List;
 
 import android.app.ActionBar;
 import android.os.Bundle;
@@ -136,7 +133,6 @@ public class CollaborativeListsActivity extends RoboActivity {
   private CollaborativeMap root;
 
   private int selectPosition;
-  private List<String> arrayList;
   @InjectView(R.id.CollaborativeList)
   ListView listView;
   @InjectView(R.id.selectItem)
@@ -178,8 +174,8 @@ public class CollaborativeListsActivity extends RoboActivity {
         public void onClick(View v) {
           String addAnItem = AddAnItem.getText().toString().trim();
           // CollaborativeList add an item
-          list.insert(list.length(), addAnItem);
-          // adapter.addItem(addAnItem);
+          // list.insert(list.length(), addAnItem);
+          adapter.addItem(addAnItem);
         }
       });
       bt_removeSelectItem.setOnClickListener(new OnClickListener() {
@@ -293,16 +289,16 @@ public class CollaborativeListsActivity extends RoboActivity {
         connectList();
       }
     };
-    ModelInitializerHandler opt_initializer = new ModelInitializerHandler() {
-      @Override
-      public void onInitializer(Model model) {
-        // mod = model;
-        // root = mod.getRoot();
-        // ListModel.initializeModel();
-      }
-    };
+    // ModelInitializerHandler opt_initializer = new ModelInitializerHandler() {
+    // @Override
+    // public void onInitializer(Model model) {
+    // mod = model;
+    // root = mod.getRoot();
+    // ListModel.initializeModel();
+    // }
+    // };
     pbIndeterminate.setVisibility(View.VISIBLE);
-    Realtime.load(ConstantValues.documentId, onLoaded, opt_initializer, null);
+    Realtime.load(ConstantValues.documentId, onLoaded, null, null);
     adapter = new ListAdapter(null);
     listView.setAdapter(adapter);
     listView.setOnItemClickListener(new OnItemClickListener() {

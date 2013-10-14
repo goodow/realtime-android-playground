@@ -20,7 +20,6 @@ import com.goodow.realtime.DocumentLoadedHandler;
 import com.goodow.realtime.DocumentSaveStateChangedEvent;
 import com.goodow.realtime.EventHandler;
 import com.goodow.realtime.Model;
-import com.goodow.realtime.ModelInitializerHandler;
 import com.goodow.realtime.ObjectChangedEvent;
 import com.goodow.realtime.Realtime;
 
@@ -157,17 +156,16 @@ public class CollaborativeStringsActivity extends RoboActivity {
         connectString();
       }
     };
-    ModelInitializerHandler opt_initializer = new ModelInitializerHandler() {
-      @Override
-      public void onInitializer(Model model) {
-        // mod = model;
-        // root = mod.getRoot();
-        // stringModel.initializeModel();
-      }
-    };
+    // ModelInitializerHandler opt_initializer = new ModelInitializerHandler() {
+    // @Override
+    // public void onInitializer(Model model) {
+    // mod = model;
+    // root = mod.getRoot();
+    // stringModel.initializeModel();
+    // }
+    // };
     pbIndeterminate.setVisibility(View.VISIBLE);
-
-    Realtime.load(ConstantValues.documentId, onLoaded, opt_initializer, null);
+    Realtime.load(ConstantValues.documentId, onLoaded, null, null);
   }
 
   private void connectString() {
