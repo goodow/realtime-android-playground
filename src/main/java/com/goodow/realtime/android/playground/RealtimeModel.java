@@ -18,7 +18,7 @@ public interface RealtimeModel {
 
   void connectUi();
 
-  void initializeModel();
+  // void initializeModel();
 
   void loadField();
 

@@ -28,5 +28,27 @@
     <string name="CollaborativeStrings">Collaborative strings</string>
     <string name="CollaborativeStringsDescription">Collaborative strings are just like normal strings, except that all browser sessions will be notified and updated when the string changes. Events are fired when strings are inserted to the collaborative string or when part of the string is deleted.</string>
     <string name="CollaborativeStringsEdit">Edit the demo Collaborative String</string>
+    <string name="CollaborativeStringsButton">Collaborative Strings Demo,Click here!</string>
+    
+    <!-- Collaborative lists -->
+    <string name="CollaborativeLists">Collaborative lists</string>
+    <string name="CollaborativeListsDescription">A collaborative list state is shared across sessions. Events are fired when items are added or removed to the list or when an existig item\'s value is set.</string>
+    <string name="CollaborativeListsEdit">Add, remove or set items on the demo Collaborative List.</string>
+    <string name="CollaborativeListsButton">Collaborative Lists Demo,Click here!</string>
+    <string name="AddAnItem">Add an item</string>
+    <string name="ClearTheList">Clear the list</string>
+    <string name="SetSelectItemValue">Set selected item\'s value</string>
+    
+    <!-- Collaborative maps -->
+    <string name="CollaborativeMaps">Collaborative maps</string>
+    <string name="CollaborativeMapsDescription">Collaborative maps share key/value state across sessions. They support standard map operations. Events are fired when key-value pairs are changed.</string>
+    <string name="CollaborativeMapsEdit">Add, change or remove key-value pairs on the demo Collaborative Map</string>
+    <string name="CollaborativeMapsButton">Collaborative Maps Demo,Click here!</string>
+    <string name="ClearTheMap">Clear the map</string>
+    <string name="PutKeyAndValue">Put Key-value pair</string>
+    
+    <string name="RemoveSelectItem">Remove selected item</string>
+    
+    
 
 </resources>
