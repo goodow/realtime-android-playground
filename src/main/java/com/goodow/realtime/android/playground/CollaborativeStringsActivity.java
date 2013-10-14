@@ -151,7 +151,6 @@ public class CollaborativeStringsActivity extends RoboActivity {
       }
     };
     pbIndeterminate.setVisibility(View.VISIBLE);
-
     Realtime.load(ConstantValues.documentId, onLoaded, null, null);
   }
 

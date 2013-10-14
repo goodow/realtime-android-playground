@@ -19,11 +19,8 @@ import com.goodow.realtime.DocumentLoadedHandler;
 import com.goodow.realtime.DocumentSaveStateChangedEvent;
 import com.goodow.realtime.EventHandler;
 import com.goodow.realtime.Model;
-import com.goodow.realtime.ModelInitializerHandler;
 import com.goodow.realtime.ObjectChangedEvent;
 import com.goodow.realtime.Realtime;
-
-import java.util.Arrays;
 
 import android.app.ActionBar;
 import android.os.Bundle;
@@ -198,7 +195,7 @@ public class CollaborativeMapsActivity extends RoboActivity {
           String value = itemValue.getText().toString().trim();
           String key = itemKey.getText().toString().trim();
           if (key != null) {
-            if (Arrays.asList(map.keys()).contains(key)) {
+            if (map.has(key)) {
               if (value != null && value.equals(map.get(key))
                   || (value == null && map.get(key) == null)) {
                 adapter.removeItem(key);
@@ -283,16 +280,16 @@ public class CollaborativeMapsActivity extends RoboActivity {
         connectMap();
       }
     };
-    ModelInitializerHandler opt_initializer = new ModelInitializerHandler() {
-      @Override
-      public void onInitializer(Model model) {
-        // mod = model;
-        // root = mod.getRoot();
-        // MapModel.initializeModel();
-      }
-    };
+    // ModelInitializerHandler opt_initializer = new ModelInitializerHandler() {
+    // @Override
+    // public void onInitializer(Model model) {
+    // mod = model;
+    // root = mod.getRoot();
+    // MapModel.initializeModel();
+    // }
+    // };
     pbIndeterminate.setVisibility(View.VISIBLE);
-    Realtime.load(ConstantValues.documentId, onLoaded, opt_initializer, null);
+    Realtime.load(ConstantValues.documentId, onLoaded, null, null);
     adapter = new MapAdapter(null);
     listView.setAdapter(adapter);
     listView.setOnItemClickListener(new OnItemClickListener() {

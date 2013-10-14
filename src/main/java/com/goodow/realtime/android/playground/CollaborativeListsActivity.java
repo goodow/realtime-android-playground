@@ -20,11 +20,8 @@ import com.goodow.realtime.DocumentLoadedHandler;
 import com.goodow.realtime.DocumentSaveStateChangedEvent;
 import com.goodow.realtime.EventHandler;
 import com.goodow.realtime.Model;
-import com.goodow.realtime.ModelInitializerHandler;
 import com.goodow.realtime.ObjectChangedEvent;
 import com.goodow.realtime.Realtime;
-
-import java.util.List;
 
 import android.app.ActionBar;
 import android.os.Bundle;
@@ -104,7 +101,7 @@ public class CollaborativeListsActivity extends RoboActivity {
       this.collaborativeList = collaborativeList;
     }
 
-    public void SetValue(int postion, String item) {
+    public void setValue(int postion, String item) {
       this.collaborativeList.set(postion, item);
       this.notifyDataSetChanged();
     }
@@ -135,27 +132,26 @@ public class CollaborativeListsActivity extends RoboActivity {
   private Model mod;
   private CollaborativeMap root;
 
-  private int selectPosition;
-  private List<String> arrayList;
+  private int currentSelected;
   @InjectView(R.id.CollaborativeList)
   ListView listView;
-  @InjectView(R.id.selectItem)
-  EditText selectItem;
 
+  @InjectView(R.id.selectItem)
+  EditText toSet;
   @InjectView(R.id.AddAnItem)
-  EditText AddAnItem;
+  EditText toAdd;
   @InjectView(R.id.bt_addAnItem)
   Button bt_addAnItem;
   @InjectView(R.id.bt_removeSelectItem)
-  Button bt_removeSelectItem;
+  Button bt_removeSelection;
   @InjectView(R.id.bt_clearTheList)
-  Button bt_clearTheList;
-
+  Button bt_clearList;
   @InjectView(R.id.bt_setSelectItem)
-  Button bt_setSelectItem;
+  Button bt_setSelected;
+
   private static final String LIST_KEY = "demo_list";
 
-  private final RealtimeModel ListModel = new RealtimeModel() {
+  private final RealtimeModel listModel = new RealtimeModel() {
     private CollaborativeList list;
 
     @Override
@@ -166,7 +162,6 @@ public class CollaborativeListsActivity extends RoboActivity {
           updateUi();
         }
       });
-
     }
 
     @Override
@@ -176,66 +171,55 @@ public class CollaborativeListsActivity extends RoboActivity {
 
         @Override
         public void onClick(View v) {
-          String addAnItem = AddAnItem.getText().toString().trim();
-          // CollaborativeList add an item
-          list.insert(list.length(), addAnItem);
-          // adapter.addItem(addAnItem);
+          String newItem = toAdd.getText().toString();
+          adapter.addItem(newItem);
         }
       });
-      bt_removeSelectItem.setOnClickListener(new OnClickListener() {
+      bt_removeSelection.setOnClickListener(new OnClickListener() {
 
         @Override
         public void onClick(View v) {
 
-          if (selectPosition != -1) {
-            String item = selectItem.getText().toString().trim();
-            String realtimeList = list.get(selectPosition);
+          if (currentSelected != -1) {
+            String item = toSet.getText().toString();
+            String realtimeList = list.get(currentSelected);
             // item not null
             if (list.length() > 0
                 && ((item != null && item.equals(realtimeList)) || (item == null && realtimeList == null))) {
               // list.remove(selectPosition);
-              adapter.removeItem(selectPosition);
-              selectPosition = -1;
+              adapter.removeItem(currentSelected);
+              currentSelected = -1;
             }
           }
-
         }
       });
 
       // clear
-      bt_clearTheList.setOnClickListener(new OnClickListener() {
+      bt_clearList.setOnClickListener(new OnClickListener() {
 
         @Override
         public void onClick(View v) {
           if (list.length() != 0) {
             // list.clear();
             adapter.clear();
-            selectPosition = -1;
+            currentSelected = -1;
 
           }
         }
       });
-      bt_setSelectItem.setOnClickListener(new OnClickListener() {
+      bt_setSelected.setOnClickListener(new OnClickListener() {
 
         @Override
         public void onClick(View v) {
-          if (selectPosition != -1) {
-            String select = selectItem.getText().toString();
-            list.set(selectPosition, select);
-            adapter.SetValue(selectPosition, select);
-            selectPosition = -1;
+          if (currentSelected != -1) {
+            String select = toSet.getText().toString();
+            list.set(currentSelected, select);
+            adapter.setValue(currentSelected, select);
+            currentSelected = -1;
           }
         }
       });
     }
-
-    // @Override
-    // public void initializeModel() {
-    // CollaborativeList list = mod.createList();
-    // list.push("Hello");
-    // list.push("World");
-    // root.set(LIST_KEY, list);
-    // }
 
     @Override
     public void loadField() {
@@ -293,16 +277,8 @@ public class CollaborativeListsActivity extends RoboActivity {
         connectList();
       }
     };
-    ModelInitializerHandler opt_initializer = new ModelInitializerHandler() {
-      @Override
-      public void onInitializer(Model model) {
-        // mod = model;
-        // root = mod.getRoot();
-        // ListModel.initializeModel();
-      }
-    };
     pbIndeterminate.setVisibility(View.VISIBLE);
-    Realtime.load(ConstantValues.documentId, onLoaded, opt_initializer, null);
+    Realtime.load(ConstantValues.documentId, onLoaded, null, null);
     adapter = new ListAdapter(null);
     listView.setAdapter(adapter);
     listView.setOnItemClickListener(new OnItemClickListener() {
@@ -310,19 +286,18 @@ public class CollaborativeListsActivity extends RoboActivity {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Object obj = listView.getItemAtPosition(position);
         // Set select item's value
-        selectItem.setText((String) obj);
+        toSet.setText((String) obj);
         // save postion
-        selectPosition = position;
+        currentSelected = position;
       }
     });
 
   }
 
   private void connectList() {
-    ListModel.loadField();
-    ListModel.updateUi();
-    ListModel.connectUi();
-    ListModel.connectRealtime();
+    listModel.loadField();
+    listModel.updateUi();
+    listModel.connectUi();
+    listModel.connectRealtime();
   }
-
 }
