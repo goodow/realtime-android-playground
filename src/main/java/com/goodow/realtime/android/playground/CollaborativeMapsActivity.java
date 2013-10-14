@@ -140,6 +140,17 @@ public class CollaborativeMapsActivity extends RoboActivity {
   Button bt_putKeyAndValue;
   @InjectView(R.id.pb_indeterminateMap)
   private ProgressBar pbIndeterminate;
+
+  private static final String MAP_KEY = "demo_map";
+
+  public static void initializeModel(Model mod) {
+    CollaborativeMap map = mod.createMap(null);
+    map.set("1", "a");
+    map.set("2", "b");
+    map.set("3", "c");
+    mod.getRoot().set(MAP_KEY, map);
+  }
+
   private final EventHandler<DocumentSaveStateChangedEvent> saveStateHandler =
       new EventHandler<DocumentSaveStateChangedEvent>() {
         @Override
@@ -152,7 +163,7 @@ public class CollaborativeMapsActivity extends RoboActivity {
         }
       };
   private final RealtimeModel MapModel = new RealtimeModel() {
-    private static final String MAP_KEY = "demo_map";
+
     private CollaborativeMap map;
 
     @Override
@@ -209,14 +220,14 @@ public class CollaborativeMapsActivity extends RoboActivity {
       });
     }
 
-    @Override
-    public void initializeModel() {
-      CollaborativeMap map = mod.createMap(null);
-      map.set("1", "a");
-      map.set("2", "b");
-      map.set("3", "c");
-      root.set(MAP_KEY, map);
-    }
+    // @Override
+    // public void initializeModel() {
+    // CollaborativeMap map = mod.createMap(null);
+    // map.set("1", "a");
+    // map.set("2", "b");
+    // map.set("3", "c");
+    // root.set(MAP_KEY, map);
+    // }
 
     @Override
     public void loadField() {
@@ -275,13 +286,13 @@ public class CollaborativeMapsActivity extends RoboActivity {
     ModelInitializerHandler opt_initializer = new ModelInitializerHandler() {
       @Override
       public void onInitializer(Model model) {
-        mod = model;
-        root = mod.getRoot();
-        MapModel.initializeModel();
+        // mod = model;
+        // root = mod.getRoot();
+        // MapModel.initializeModel();
       }
     };
     pbIndeterminate.setVisibility(View.VISIBLE);
-    Realtime.load("@tmp/demo", onLoaded, opt_initializer, null);
+    Realtime.load(ConstantValues.documentId, onLoaded, opt_initializer, null);
     adapter = new MapAdapter(null);
     listView.setAdapter(adapter);
     listView.setOnItemClickListener(new OnItemClickListener() {

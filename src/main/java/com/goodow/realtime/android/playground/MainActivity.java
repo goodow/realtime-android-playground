@@ -13,6 +13,10 @@
  */
 package com.goodow.realtime.android.playground;
 
+import com.goodow.realtime.Document;
+import com.goodow.realtime.DocumentLoadedHandler;
+import com.goodow.realtime.Model;
+import com.goodow.realtime.ModelInitializerHandler;
 import com.goodow.realtime.Realtime;
 
 import com.google.api.client.http.HttpTransport;
@@ -72,10 +76,26 @@ public class MainActivity extends RoboActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    userIdText.setText("688185492143008835447");
-    accessTokenText.setText("68c8f4141821bdcc7a43f4233a2b732d3ed956b5");
-    docIdText.setText("@tmp/demo");
+    userIdText.setText(ConstantValues.userId);
+    accessTokenText.setText(ConstantValues.accessToken);
+    docIdText.setText(ConstantValues.documentId);
     Realtime.authorize(userIdText.getText().toString(), accessTokenText.getText().toString());
+    DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
+
+      @Override
+      public void onLoaded(Document document) {
+
+      }
+    };
+    ModelInitializerHandler opt_initializer = new ModelInitializerHandler() {
+      @Override
+      public void onInitializer(Model model) {
+        CollaborativeStringsActivity.initializeModel(model);
+        CollaborativeListsActivity.initializeModel(model);
+        CollaborativeMapsActivity.initializeModel(model);
+      }
+    };
+    Realtime.load(ConstantValues.userId, onLoaded, opt_initializer, null);
 
   }
 }

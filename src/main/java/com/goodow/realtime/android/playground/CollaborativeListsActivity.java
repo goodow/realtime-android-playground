@@ -110,6 +110,13 @@ public class CollaborativeListsActivity extends RoboActivity {
     }
   }
 
+  public static void initializeModel(Model mod) {
+    CollaborativeList list = mod.createList();
+    list.push("Hello");
+    list.push("World");
+    mod.getRoot().set(LIST_KEY, list);
+  }
+
   private final EventHandler<DocumentSaveStateChangedEvent> saveStateHandler =
       new EventHandler<DocumentSaveStateChangedEvent>() {
         @Override
@@ -121,33 +128,34 @@ public class CollaborativeListsActivity extends RoboActivity {
           }
         }
       };
+
   @InjectView(R.id.pb_indeterminateList)
   private ProgressBar pbIndeterminate;
-
   private Document doc;
   private Model mod;
   private CollaborativeMap root;
-  private int selectPosition;
 
+  private int selectPosition;
   private List<String> arrayList;
   @InjectView(R.id.CollaborativeList)
   ListView listView;
   @InjectView(R.id.selectItem)
   EditText selectItem;
+
   @InjectView(R.id.AddAnItem)
   EditText AddAnItem;
-
   @InjectView(R.id.bt_addAnItem)
   Button bt_addAnItem;
   @InjectView(R.id.bt_removeSelectItem)
   Button bt_removeSelectItem;
   @InjectView(R.id.bt_clearTheList)
   Button bt_clearTheList;
+
   @InjectView(R.id.bt_setSelectItem)
   Button bt_setSelectItem;
+  private static final String LIST_KEY = "demo_list";
 
   private final RealtimeModel ListModel = new RealtimeModel() {
-    private static final String LIST_KEY = "demo_list";
     private CollaborativeList list;
 
     @Override
@@ -221,13 +229,13 @@ public class CollaborativeListsActivity extends RoboActivity {
       });
     }
 
-    @Override
-    public void initializeModel() {
-      CollaborativeList list = mod.createList();
-      list.push("Hello");
-      list.push("World");
-      root.set(LIST_KEY, list);
-    }
+    // @Override
+    // public void initializeModel() {
+    // CollaborativeList list = mod.createList();
+    // list.push("Hello");
+    // list.push("World");
+    // root.set(LIST_KEY, list);
+    // }
 
     @Override
     public void loadField() {
@@ -288,13 +296,13 @@ public class CollaborativeListsActivity extends RoboActivity {
     ModelInitializerHandler opt_initializer = new ModelInitializerHandler() {
       @Override
       public void onInitializer(Model model) {
-        mod = model;
-        root = mod.getRoot();
-        ListModel.initializeModel();
+        // mod = model;
+        // root = mod.getRoot();
+        // ListModel.initializeModel();
       }
     };
     pbIndeterminate.setVisibility(View.VISIBLE);
-    Realtime.load("@tmp/demo", onLoaded, opt_initializer, null);
+    Realtime.load(ConstantValues.documentId, onLoaded, opt_initializer, null);
     adapter = new ListAdapter(null);
     listView.setAdapter(adapter);
     listView.setOnItemClickListener(new OnItemClickListener() {

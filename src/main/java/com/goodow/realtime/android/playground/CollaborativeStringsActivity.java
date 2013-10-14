@@ -38,14 +38,20 @@ import roboguice.inject.InjectView;
 
 public class CollaborativeStringsActivity extends RoboActivity {
 
+  public static void initializeModel(Model mod) {
+    CollaborativeString string = mod.createString("Edit Me!");
+    mod.getRoot().set(STR_KEY, string);
+  }
+
   private Document doc;
   private Model mod;
   private CollaborativeMap root;
   @InjectView(R.id.editText)
   EditText stringText;
+
   @InjectView(R.id.pb_indeterminate)
   private ProgressBar pbIndeterminate;
-
+  private static final String STR_KEY = "demo_string";
   private final EventHandler<DocumentSaveStateChangedEvent> saveStateHandler =
       new EventHandler<DocumentSaveStateChangedEvent>() {
         @Override
@@ -59,7 +65,7 @@ public class CollaborativeStringsActivity extends RoboActivity {
       };
 
   private final RealtimeModel stringModel = new RealtimeModel() {
-    private static final String STR_KEY = "demo_string";
+
     private CollaborativeString str;
 
     @Override
@@ -90,11 +96,11 @@ public class CollaborativeStringsActivity extends RoboActivity {
       });
     }
 
-    @Override
-    public void initializeModel() {
-      CollaborativeString string = mod.createString("Edit Me!");
-      root.set(STR_KEY, string);
-    }
+    // @Override
+    // public void initializeModel() {
+    // CollaborativeString string = mod.createString("Edit Me!");
+    // root.set(STR_KEY, string);
+    // }
 
     @Override
     public void loadField() {
@@ -154,14 +160,14 @@ public class CollaborativeStringsActivity extends RoboActivity {
     ModelInitializerHandler opt_initializer = new ModelInitializerHandler() {
       @Override
       public void onInitializer(Model model) {
-        mod = model;
-        root = mod.getRoot();
-        stringModel.initializeModel();
+        // mod = model;
+        // root = mod.getRoot();
+        // stringModel.initializeModel();
       }
     };
     pbIndeterminate.setVisibility(View.VISIBLE);
 
-    Realtime.load("@tmp/demo", onLoaded, opt_initializer, null);
+    Realtime.load(ConstantValues.documentId, onLoaded, opt_initializer, null);
   }
 
   private void connectString() {
