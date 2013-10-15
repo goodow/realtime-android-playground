@@ -1,5 +1,5 @@
 # Maven build output.
-target/
+/target/
 
 # Generated for Eclipse.
 .settings/
