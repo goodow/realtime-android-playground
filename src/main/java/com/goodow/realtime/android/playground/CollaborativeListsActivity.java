@@ -103,9 +103,7 @@ public class CollaborativeListsActivity extends RoboActivity {
   }
 
   public static void initializeModel(Model mod) {
-    CollaborativeList list = mod.createList();
-    list.push("Hello");
-    list.push("World");
+    CollaborativeList list = mod.createList("Cat", "Dog", "Sheep", "Chicken");
     mod.getRoot().set(LIST_KEY, list);
   }
 

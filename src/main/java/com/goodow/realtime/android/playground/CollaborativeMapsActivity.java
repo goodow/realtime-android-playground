@@ -138,9 +138,10 @@ public class CollaborativeMapsActivity extends RoboActivity {
 
   public static void initializeModel(Model mod) {
     CollaborativeMap map = mod.createMap(null);
-    map.set("1", "a");
-    map.set("2", "b");
-    map.set("3", "c");
+    map.set("Key 1", "Value 1");
+    map.set("Key 2", "Value 2");
+    map.set("Key 3", "Value 3");
+    map.set("Key 4", "Value 4");
     mod.getRoot().set(MAP_KEY, map);
   }
 

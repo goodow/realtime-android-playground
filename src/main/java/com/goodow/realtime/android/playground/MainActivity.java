@@ -95,7 +95,7 @@ public class MainActivity extends RoboActivity {
         CollaborativeMapsActivity.initializeModel(model);
       }
     };
-    Realtime.load(ConstantValues.userId, onLoaded, opt_initializer, null);
+    Realtime.load(ConstantValues.documentId, onLoaded, opt_initializer, null);
 
   }
 }
