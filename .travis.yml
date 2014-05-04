@@ -1,0 +1,19 @@
+language: java
+
+before_install:
+- wget -P target/travis https://raw.githubusercontent.com/goodow/maven/master/settings.xml
+- sudo apt-get update -qq
+- if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null; fi
+- wget http://dl.google.com/android/android-sdk_r22.6.2-linux.tgz
+- tar -zxf android-sdk_r22.6.2-linux.tgz
+- export ANDROID_HOME=$PWD/android-sdk-linux
+- export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
+- echo yes | android update sdk --filter platform-tools,android-19 --no-ui --force > /dev/null
+
+after_success:
+- '[ ${TRAVIS_PULL_REQUEST} = ''false'' ] && mvn deploy -Psonatype-oss-release -Dgpg.skip=true
+  --settings target/travis/settings.xml || mvn verify --settings target/travis/settings.xml'
+
+env:
+  global:
+    secure: ZEXRBpdFsEtZpCXdEMEHpCDRZ5UID0TRHQ4FGdXrqSLEx45LkDEKyBMb8ho9vyqu0pB9uNF5i768L/mMV0SkCizzDlZH45mdmqaspnll6q/sTuyHvs0Y8oRW4wFN2QwhVeKK+cL0ilxAsyprfKq2YE4pz34yc1uIPYvGR/hhxI8=
