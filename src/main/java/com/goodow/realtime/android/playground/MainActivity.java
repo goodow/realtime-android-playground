@@ -13,62 +13,43 @@
  */
 package com.goodow.realtime.android.playground;
 
-import com.goodow.realtime.Document;
-import com.goodow.realtime.DocumentLoadedHandler;
-import com.goodow.realtime.Model;
-import com.goodow.realtime.ModelInitializerHandler;
-import com.goodow.realtime.Realtime;
-
-import com.google.api.client.http.HttpTransport;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import roboguice.activity.RoboActivity;
-import roboguice.inject.InjectView;
+import com.goodow.realtime.core.Handler;
+import com.goodow.realtime.store.Document;
+import com.goodow.realtime.store.Model;
+import com.goodow.realtime.store.Store;
 
-public class MainActivity extends RoboActivity {
-  static {
-    // To enable logging of HTTP requests and responses (including URL,
-    // headers, and content)
-    Logger.getLogger(HttpTransport.class.getName()).setLevel(Level.CONFIG);
-  }
-  @InjectView(R.id.userId)
-  EditText userIdText;
-  @InjectView(R.id.accessToken)
-  EditText accessTokenText;
-  @InjectView(R.id.docId)
-  EditText docIdText;
+public class MainActivity extends Activity {
+  static final String ID = "test/playground";
+  private Store store;
+  private Document doc;
+  private EditText userIdText;
+  private EditText accessTokenText;
+  private EditText docIdText;
 
   /**
-   * CollaborativeLists
-   * 
-   * @param view
+   * CollaborativeList
    */
   public void collaborativeListsButton(View view) {
-    startActivity(new Intent(this, CollaborativeListsActivity.class));
+    startActivity(new Intent(this, CollaborativeListActivity.class));
   }
 
   /**
-   * CollaborativeMaps
-   * 
-   * @param view
+   * CollaborativeMap
    */
   public void collaborativeMapsButton(View view) {
-    startActivity(new Intent(this, CollaborativeMapsActivity.class));
+    startActivity(new Intent(this, CollaborativeMapActivity.class));
   }
 
   /**
-   * CollaborativeStrings
-   * 
-   * @param view
+   * CollaborativeString
    */
   public void collaborativeStringsButton(View view) {
-    startActivity(new Intent(this, CollaborativeStringsActivity.class));
+    startActivity(new Intent(this, CollaborativeStringActivity.class));
   }
 
   @Override
@@ -76,26 +57,39 @@ public class MainActivity extends RoboActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    userIdText.setText(ConstantValues.userId);
-    accessTokenText.setText(ConstantValues.accessToken);
-    docIdText.setText(ConstantValues.documentId);
-    Realtime.authorize(userIdText.getText().toString(), accessTokenText.getText().toString());
-    DocumentLoadedHandler onLoaded = new DocumentLoadedHandler() {
+    store = StoreProvider.get();
 
+    userIdText = (EditText) findViewById(R.id.userId);
+    accessTokenText = (EditText) findViewById(R.id.accessToken);
+    docIdText = (EditText) findViewById(R.id.docId);
+    docIdText.setText(ID);
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+
+    doc.close();
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+
+    Handler<Document> onLoaded = new Handler<Document>() {
       @Override
-      public void onLoaded(Document document) {
-
+      public void handle(Document document) {
+        doc = document;
       }
     };
-    ModelInitializerHandler opt_initializer = new ModelInitializerHandler() {
+    Handler<Model> opt_initializer = new Handler<Model>() {
       @Override
-      public void onInitializer(Model model) {
-        CollaborativeStringsActivity.initializeModel(model);
-        CollaborativeListsActivity.initializeModel(model);
-        CollaborativeMapsActivity.initializeModel(model);
+      public void handle(Model model) {
+        CollaborativeStringActivity.initializeModel(model);
+        CollaborativeListActivity.initializeModel(model);
+        CollaborativeMapActivity.initializeModel(model);
       }
     };
-    Realtime.load(ConstantValues.documentId, onLoaded, opt_initializer, null);
-
+    store.load(docIdText.getText().toString(), onLoaded, opt_initializer, null);
   }
 }
