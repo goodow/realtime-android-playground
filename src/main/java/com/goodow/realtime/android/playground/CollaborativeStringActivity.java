@@ -68,7 +68,9 @@ public class CollaborativeStringActivity extends Activity {
       str.addObjectChangedListener(new Handler<ObjectChangedEvent>() {
         @Override
         public void handle(ObjectChangedEvent event) {
-          updateUi();
+          if(!event.isLocal) {
+            updateUi();
+          }
         }
       });
     }
