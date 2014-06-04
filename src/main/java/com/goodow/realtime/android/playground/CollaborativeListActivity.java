@@ -30,6 +30,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.goodow.realtime.core.Handler;
+import com.goodow.realtime.json.Json;
 import com.goodow.realtime.store.CollaborativeList;
 import com.goodow.realtime.store.CollaborativeMap;
 import com.goodow.realtime.store.Document;
@@ -100,7 +101,8 @@ public class CollaborativeListActivity extends Activity {
   }
 
   public static void initializeModel(Model mod) {
-    CollaborativeList list = mod.createList("Cat", "Dog", "Sheep", "Chicken");
+    CollaborativeList list = mod.createList(
+        Json.createArray().push("Cat").push("Dog").push("Sheep").push("Chicken"));
     mod.getRoot().set(LIST_KEY, list);
   }
 
@@ -108,7 +110,7 @@ public class CollaborativeListActivity extends Activity {
       new Handler<DocumentSaveStateChangedEvent>() {
         @Override
         public void handle(DocumentSaveStateChangedEvent event) {
-          if (event.isSaving || event.isPending) {
+          if (event.isSaving() || event.isPending()) {
             pbIndeterminate.setVisibility(View.VISIBLE);
           } else {
             pbIndeterminate.setVisibility(View.GONE);
@@ -139,7 +141,7 @@ public class CollaborativeListActivity extends Activity {
 
     @Override
     public void connectRealtime() {
-      list.addObjectChangedListener(new Handler<ObjectChangedEvent>() {
+      list.onObjectChanged(new Handler<ObjectChangedEvent>() {
         @Override
         public void handle(ObjectChangedEvent event) {
           updateUi();
@@ -231,7 +233,7 @@ public class CollaborativeListActivity extends Activity {
       @Override
       public void handle(Document document) {
         pbIndeterminate.setVisibility(View.GONE);
-        document.addDocumentSaveStateListener(saveStateHandler);
+        document.onDocumentSaveStateChanged(saveStateHandler);
         doc = document;
         mod = doc.getModel();
         root = mod.getRoot();

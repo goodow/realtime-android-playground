@@ -51,7 +51,7 @@ public class CollaborativeStringActivity extends Activity {
       new Handler<DocumentSaveStateChangedEvent>() {
         @Override
         public void handle(DocumentSaveStateChangedEvent event) {
-          if (event.isSaving || event.isPending) {
+          if (event.isSaving() || event.isPending()) {
             pbIndeterminate.setVisibility(View.VISIBLE);
           } else {
             pbIndeterminate.setVisibility(View.GONE);
@@ -65,10 +65,10 @@ public class CollaborativeStringActivity extends Activity {
 
     @Override
     public void connectRealtime() {
-      str.addObjectChangedListener(new Handler<ObjectChangedEvent>() {
+      str.onObjectChanged(new Handler<ObjectChangedEvent>() {
         @Override
         public void handle(ObjectChangedEvent event) {
-          if(!event.isLocal) {
+          if (!event.isLocal()) {
             updateUi();
           }
         }
@@ -156,7 +156,7 @@ public class CollaborativeStringActivity extends Activity {
       @Override
       public void handle(Document document) {
         pbIndeterminate.setVisibility(View.GONE);
-        document.addDocumentSaveStateListener(saveStateHandler);
+        document.onDocumentSaveStateChanged(saveStateHandler);
 
         doc = document;
         mod = doc.getModel();

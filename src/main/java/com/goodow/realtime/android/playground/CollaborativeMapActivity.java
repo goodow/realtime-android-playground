@@ -73,8 +73,8 @@ public class CollaborativeMapActivity extends Activity {
     @Override
     public Object getItem(int position) {
       String[] string = new String[2];
-      string[0] = collaborativeMap.keys()[position];
-      string[1] = collaborativeMap.get(collaborativeMap.keys()[position]);
+      string[0] = collaborativeMap.keys().getString(position);
+      string[1] = collaborativeMap.get(collaborativeMap.keys().getString(position));
       return string;
 
     }
@@ -98,8 +98,8 @@ public class CollaborativeMapActivity extends Activity {
         holder.values = (TextView) view.findViewById(R.id.tv_value);
         view.setTag(holder);
       }
-      holder.keys.setText(collaborativeMap.keys()[position]);
-      holder.values.setText((String) collaborativeMap.get(collaborativeMap.keys()[position]));
+      holder.keys.setText(collaborativeMap.keys().getString(position));
+      holder.values.setText((String) collaborativeMap.get(collaborativeMap.keys().getString(position)));
       return view;
     }
 
@@ -140,7 +140,7 @@ public class CollaborativeMapActivity extends Activity {
       new Handler<DocumentSaveStateChangedEvent>() {
         @Override
         public void handle(DocumentSaveStateChangedEvent event) {
-          if (event.isSaving || event.isPending) {
+          if (event.isSaving() || event.isPending()) {
             pbIndeterminate.setVisibility(View.VISIBLE);
           } else {
             pbIndeterminate.setVisibility(View.GONE);
@@ -153,7 +153,7 @@ public class CollaborativeMapActivity extends Activity {
 
     @Override
     public void connectRealtime() {
-      map.addObjectChangedListener(new Handler<ObjectChangedEvent>() {
+      map.onObjectChanged(new Handler<ObjectChangedEvent>() {
         @Override
         public void handle(ObjectChangedEvent event) {
           updateUi();
@@ -216,7 +216,7 @@ public class CollaborativeMapActivity extends Activity {
       @Override
       public void handle(Document document) {
         pbIndeterminate.setVisibility(View.GONE);
-        document.addDocumentSaveStateListener(saveStateHandler);
+        document.onDocumentSaveStateChanged(saveStateHandler);
         doc = document;
         mod = doc.getModel();
         root = mod.getRoot();
