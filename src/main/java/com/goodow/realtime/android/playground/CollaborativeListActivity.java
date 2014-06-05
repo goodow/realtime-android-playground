@@ -133,6 +133,7 @@ public class CollaborativeListActivity extends Activity {
   private Button bt_removeSelection;
   private Button bt_clearList;
   private Button bt_setSelected;
+  private boolean autoClose;
 
   private static final String LIST_KEY = "demo_list";
 
@@ -221,8 +222,12 @@ public class CollaborativeListActivity extends Activity {
   @Override
   protected void onPause() {
     super.onPause();
-
-    doc.close();
+    if(doc != null) {
+      doc.close();
+      autoClose = false;
+    } else {
+      autoClose = true;
+    }
   }
 
   @Override
@@ -235,6 +240,10 @@ public class CollaborativeListActivity extends Activity {
         pbIndeterminate.setVisibility(View.GONE);
         document.onDocumentSaveStateChanged(saveStateHandler);
         doc = document;
+        if(autoClose){
+          doc.close();
+          return;
+        }
         mod = doc.getModel();
         root = mod.getRoot();
         adapter = new ListAdapter((CollaborativeList) root.get(LIST_KEY));
@@ -278,8 +287,7 @@ public class CollaborativeListActivity extends Activity {
     bt_setSelected = (Button) findViewById(R.id.bt_setSelectItem);
 
     ActionBar actionBar = this.getActionBar();
-//    actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
-//    actionBar.setTitle("CollabrativeList Demo");
+    actionBar.setTitle("CollabrativeList Demo");
 
     listView.setOnItemClickListener(new OnItemClickListener() {
       @Override
