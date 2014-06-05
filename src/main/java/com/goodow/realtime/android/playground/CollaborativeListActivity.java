@@ -222,8 +222,9 @@ public class CollaborativeListActivity extends Activity {
   @Override
   protected void onPause() {
     super.onPause();
-    if(doc != null) {
+    if (doc != null) {
       doc.close();
+      doc = null;
       autoClose = false;
     } else {
       autoClose = true;
@@ -240,8 +241,10 @@ public class CollaborativeListActivity extends Activity {
         pbIndeterminate.setVisibility(View.GONE);
         document.onDocumentSaveStateChanged(saveStateHandler);
         doc = document;
-        if(autoClose){
+        if (autoClose) {
           doc.close();
+          doc = null;
+          autoClose = false;
           return;
         }
         mod = doc.getModel();

@@ -71,8 +71,9 @@ public class MainActivity extends Activity {
   @Override
   protected void onPause() {
     super.onPause();
-    if(doc != null) {
+    if (doc != null) {
       doc.close();
+      doc = null;
       autoClose = false;
     } else {
       autoClose = true;
@@ -87,6 +88,12 @@ public class MainActivity extends Activity {
       @Override
       public void handle(Document document) {
         doc = document;
+        if (autoClose) {
+          doc.close();
+          doc = null;
+          autoClose = false;
+          return;
+        }
       }
     };
     Handler<Model> opt_initializer = new Handler<Model>() {

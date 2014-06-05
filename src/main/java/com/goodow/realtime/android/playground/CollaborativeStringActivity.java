@@ -148,6 +148,7 @@ public class CollaborativeStringActivity extends Activity {
     super.onPause();
     if(doc != null) {
       doc.close();
+      doc = null;
       autoClose = false;
     } else {
       autoClose = true;
@@ -167,6 +168,8 @@ public class CollaborativeStringActivity extends Activity {
         doc = document;
         if(autoClose){
           doc.close();
+          doc = null;
+          autoClose = false;
           return;
         }
         mod = doc.getModel();
