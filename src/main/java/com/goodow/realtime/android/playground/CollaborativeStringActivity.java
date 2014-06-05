@@ -118,11 +118,13 @@ public class CollaborativeStringActivity extends Activity {
       case R.id.menu_undo:
         if (mod.canUndo()) {
           mod.undo();
+          stringModel.updateUi();
         }
         break;
       case R.id.menu_redo:
         if (mod.canRedo()) {
           mod.redo();
+          stringModel.updateUi();
         }
         break;
     }
