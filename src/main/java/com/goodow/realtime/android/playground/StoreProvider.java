@@ -16,7 +16,7 @@ package com.goodow.realtime.android.playground;
 import com.goodow.realtime.android.AndroidPlatform;
 import com.goodow.realtime.java.JavaWebSocket;
 import com.goodow.realtime.store.Store;
-import com.goodow.realtime.store.impl.DefaultStore;
+import com.goodow.realtime.store.impl.StoreImpl;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,7 +32,7 @@ public final class StoreProvider {
     // adb shell setprop log.tag.JavaWebSocket DEBUG
     Logger.getLogger(JavaWebSocket.class.getName()).setLevel(Level.ALL);
   }
-  private static final Store INSTANCE = new DefaultStore("ws://" + SERVER + "/channel/websocket",
+  private static final Store INSTANCE = new StoreImpl("ws://" + SERVER + "/channel/websocket",
       null);
 
   public static Store get() {
