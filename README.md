@@ -1,4 +1,4 @@
-realtime-android-playground [![Build Status](https://travis-ci.org/goodow/realtime-android-playground.svg?branch=master)](https://travis-ci.org/goodow/realtime-android-playground)
+realtime-android-playground  [![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.goodow.realtime.android.playground) [![Build Status](https://travis-ci.org/goodow/realtime-android-playground.svg?branch=master)](https://travis-ci.org/goodow/realtime-android-playground)
 ==================
 
 Goodow Realtime API Playground helps you to try out the features of the Realtime API
