@@ -123,6 +123,7 @@ public class CollaborativeListActivity extends Activity {
   private Document doc;
   private Model mod;
   private CollaborativeMap root;
+  private boolean active = false;
 
   private int currentSelected = -1;
 
@@ -221,17 +222,24 @@ public class CollaborativeListActivity extends Activity {
   @Override
   protected void onPause() {
     super.onPause();
-
-    doc.close();
+    active = false;
+    if (doc != null) {
+      doc.close();
+    }
   }
 
   @Override
   protected void onResume() {
     super.onResume();
+    active = true;
 
     Handler<Document> onLoaded = new Handler<Document>() {
       @Override
       public void handle(Document document) {
+        if (!active) {
+          document.close();
+          return;
+        }
         pbIndeterminate.setVisibility(View.GONE);
         document.onDocumentSaveStateChanged(saveStateHandler);
         doc = document;

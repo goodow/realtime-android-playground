@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- <string name="com.goodow.realtime.serverAddress">http://localhost:8888</string> -->
-    
-    <string name="app_name">Goodow Realtime API Playground</string>
+    <string name="app_name">Goodow Realtime Store API Playground</string>
     <string name="action_settings">Settings</string>
 
     <!-- Step1 -->

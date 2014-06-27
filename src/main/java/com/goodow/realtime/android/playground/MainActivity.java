@@ -24,12 +24,13 @@ import com.goodow.realtime.store.Model;
 import com.goodow.realtime.store.Store;
 
 public class MainActivity extends Activity {
-  static final String ID = "test/playground";
+  static final String ID = "playground/0";
   private Store store;
   private Document doc;
   private EditText userIdText;
   private EditText accessTokenText;
   private EditText docIdText;
+  private boolean active = false;
 
   /**
    * CollaborativeList
@@ -69,16 +70,24 @@ public class MainActivity extends Activity {
   protected void onPause() {
     super.onPause();
 
-    doc.close();
+    active = false;
+    if (doc != null) {
+      doc.close();
+    }
   }
 
   @Override
   protected void onResume() {
     super.onResume();
+    active = true;
 
     Handler<Document> onLoaded = new Handler<Document>() {
       @Override
       public void handle(Document document) {
+        if (!active) {
+          document.close();
+          return;
+        }
         doc = document;
       }
     };

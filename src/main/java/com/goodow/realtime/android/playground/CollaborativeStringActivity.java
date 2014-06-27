@@ -45,6 +45,7 @@ public class CollaborativeStringActivity extends Activity {
   private CollaborativeMap root;
   private EditText stringText;
   private ProgressBar pbIndeterminate;
+  private boolean active = false;
 
   private static final String STR_KEY = "demo_string";
   private final Handler<DocumentSaveStateChangedEvent> saveStateHandler =
@@ -144,17 +145,24 @@ public class CollaborativeStringActivity extends Activity {
   @Override
   protected void onPause() {
     super.onPause();
-
-    doc.close();
+    active = false;
+    if (doc != null) {
+      doc.close();
+    }
   }
 
   @Override
   protected void onResume() {
     super.onResume();
+    active = true;
 
     Handler<Document> onLoaded = new Handler<Document>() {
       @Override
       public void handle(Document document) {
+        if (!active) {
+          document.close();
+          return;
+        }
         pbIndeterminate.setVisibility(View.GONE);
         document.onDocumentSaveStateChanged(saveStateHandler);
 
