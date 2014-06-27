@@ -17,6 +17,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import com.goodow.realtime.core.Handler;
 import com.goodow.realtime.store.Document;
@@ -30,6 +31,7 @@ public class MainActivity extends Activity {
   private EditText userIdText;
   private EditText accessTokenText;
   private EditText docIdText;
+  private boolean autoClose;
 
   /**
    * CollaborativeList
@@ -63,13 +65,19 @@ public class MainActivity extends Activity {
     accessTokenText = (EditText) findViewById(R.id.accessToken);
     docIdText = (EditText) findViewById(R.id.docId);
     docIdText.setText(ID);
+    getWindow().setSoftInputMode( WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
   }
 
   @Override
   protected void onPause() {
     super.onPause();
-
-    doc.close();
+    if (doc != null) {
+      doc.close();
+      doc = null;
+      autoClose = false;
+    } else {
+      autoClose = true;
+    }
   }
 
   @Override
@@ -80,6 +88,12 @@ public class MainActivity extends Activity {
       @Override
       public void handle(Document document) {
         doc = document;
+        if (autoClose) {
+          doc.close();
+          doc = null;
+          autoClose = false;
+          return;
+        }
       }
     };
     Handler<Model> opt_initializer = new Handler<Model>() {

@@ -124,6 +124,7 @@ public class CollaborativeMapActivity extends Activity {
   private Button bt_clearTheMap;
   private Button bt_putKeyAndValue;
   private ProgressBar pbIndeterminate;
+  private boolean autoClose;
 
   private static final String MAP_KEY = "demo_map";
 
@@ -218,6 +219,12 @@ public class CollaborativeMapActivity extends Activity {
         pbIndeterminate.setVisibility(View.GONE);
         document.onDocumentSaveStateChanged(saveStateHandler);
         doc = document;
+        if (autoClose) {
+          doc.close();
+          doc = null;
+          autoClose = false;
+          return;
+        }
         mod = doc.getModel();
         root = mod.getRoot();
         adapter = new MapAdapter((CollaborativeMap) root.get("demo_map"));
@@ -232,8 +239,13 @@ public class CollaborativeMapActivity extends Activity {
   @Override
   protected void onPause() {
     super.onPause();
-
-    doc.close();
+    if (doc != null) {
+      doc.close();
+      doc = null;
+      autoClose = false;
+    } else {
+      autoClose = true;
+    }
   }
 
   @Override
@@ -267,8 +279,7 @@ public class CollaborativeMapActivity extends Activity {
     pbIndeterminate = (ProgressBar) findViewById(R.id.pb_indeterminateMap);
 
     ActionBar actionBar = this.getActionBar();
-//    actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
-//    actionBar.setTitle("CollabrativeMap Demo");
+    actionBar.setTitle("CollabrativeMap Demo");
 
     listView.setOnItemClickListener(new OnItemClickListener() {
       @Override

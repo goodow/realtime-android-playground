@@ -45,6 +45,7 @@ public class CollaborativeStringActivity extends Activity {
   private CollaborativeMap root;
   private EditText stringText;
   private ProgressBar pbIndeterminate;
+  private boolean autoClose;
 
   private static final String STR_KEY = "demo_string";
   private final Handler<DocumentSaveStateChangedEvent> saveStateHandler =
@@ -117,11 +118,13 @@ public class CollaborativeStringActivity extends Activity {
       case R.id.menu_undo:
         if (mod.canUndo()) {
           mod.undo();
+          stringModel.updateUi();
         }
         break;
       case R.id.menu_redo:
         if (mod.canRedo()) {
           mod.redo();
+          stringModel.updateUi();
         }
         break;
     }
@@ -137,15 +140,19 @@ public class CollaborativeStringActivity extends Activity {
     pbIndeterminate = (ProgressBar) findViewById(R.id.pb_indeterminate);
 
     ActionBar actionBar = this.getActionBar();
-//    actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
-//    actionBar.setTitle("CollaborativeString Demo");
+    actionBar.setTitle("CollaborativeString Demo");
   }
 
   @Override
   protected void onPause() {
     super.onPause();
-
-    doc.close();
+    if(doc != null) {
+      doc.close();
+      doc = null;
+      autoClose = false;
+    } else {
+      autoClose = true;
+    }
   }
 
   @Override
@@ -159,6 +166,12 @@ public class CollaborativeStringActivity extends Activity {
         document.onDocumentSaveStateChanged(saveStateHandler);
 
         doc = document;
+        if(autoClose){
+          doc.close();
+          doc = null;
+          autoClose = false;
+          return;
+        }
         mod = doc.getModel();
         root = mod.getRoot();
 
