@@ -29,10 +29,12 @@ import com.goodow.realtime.store.CollaborativeMap;
 import com.goodow.realtime.store.CollaborativeString;
 import com.goodow.realtime.store.Document;
 import com.goodow.realtime.store.DocumentSaveStateChangedEvent;
+import com.goodow.realtime.store.IndexReference;
 import com.goodow.realtime.store.Model;
 import com.goodow.realtime.store.Store;
 import com.goodow.realtime.store.TextDeletedEvent;
 import com.goodow.realtime.store.TextInsertedEvent;
+
 import com.goodow.realtime.store.UndoRedoStateChangedEvent;
 
 public class CollaborativeStringActivity extends Activity {
@@ -46,6 +48,8 @@ public class CollaborativeStringActivity extends Activity {
   private Document doc;
   private Model mod;
   private CollaborativeMap root;
+  private IndexReference cursorStart;
+  private IndexReference cursorEnd;
   private EditText stringText;
   private ProgressBar pbIndeterminate;
   private boolean active = false;
@@ -96,11 +100,18 @@ public class CollaborativeStringActivity extends Activity {
     @Override
     public void loadField() {
       str = root.get(STR_KEY);
+      cursorStart = str.registerReference(0, false);
+      cursorEnd = str.registerReference(0, false);
     }
 
     @Override
     public void updateUi() {
       stringText.setText(str.getText());
+      stringText.setSelection(guardedCursor(cursorStart.index()), guardedCursor(cursorEnd.index()));
+    }
+
+    private int guardedCursor(int cursor) {
+      return cursor < 0 ? 0 : cursor;
     }
   };
 
