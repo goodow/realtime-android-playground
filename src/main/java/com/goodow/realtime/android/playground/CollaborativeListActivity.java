@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.goodow.realtime.core.Handler;
 import com.goodow.realtime.json.Json;
 import com.goodow.realtime.store.CollaborativeList;
@@ -105,18 +106,6 @@ public class CollaborativeListActivity extends Activity {
         Json.createArray().push("Cat").push("Dog").push("Sheep").push("Chicken"));
     mod.getRoot().set(LIST_KEY, list);
   }
-
-  private final Handler<DocumentSaveStateChangedEvent> saveStateHandler =
-      new Handler<DocumentSaveStateChangedEvent>() {
-        @Override
-        public void handle(DocumentSaveStateChangedEvent event) {
-          if (event.isSaving() || event.isPending()) {
-            pbIndeterminate.setVisibility(View.VISIBLE);
-          } else {
-            pbIndeterminate.setVisibility(View.GONE);
-          }
-        }
-      };
 
   private Store store = StoreProvider.get();
   private ProgressBar pbIndeterminate;
@@ -240,11 +229,22 @@ public class CollaborativeListActivity extends Activity {
           document.close();
           return;
         }
-        pbIndeterminate.setVisibility(View.GONE);
-        document.onDocumentSaveStateChanged(saveStateHandler);
         doc = document;
         mod = doc.getModel();
         root = mod.getRoot();
+
+        pbIndeterminate.setVisibility(View.GONE);
+        doc.onDocumentSaveStateChanged(new Handler<DocumentSaveStateChangedEvent>() {
+          @Override
+          public void handle(DocumentSaveStateChangedEvent event) {
+            if (event.isSaving() || event.isPending()) {
+              pbIndeterminate.setVisibility(View.VISIBLE);
+            } else {
+              pbIndeterminate.setVisibility(View.GONE);
+            }
+          }
+        });
+
         adapter = new ListAdapter((CollaborativeList) root.get(LIST_KEY));
         listView.setAdapter(adapter);
         connectList();

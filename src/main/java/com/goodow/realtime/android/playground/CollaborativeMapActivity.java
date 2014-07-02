@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.goodow.realtime.core.Handler;
 import com.goodow.realtime.store.CollaborativeMap;
 import com.goodow.realtime.store.Document;
@@ -137,19 +138,7 @@ public class CollaborativeMapActivity extends Activity {
     mod.getRoot().set(MAP_KEY, map);
   }
 
-  private final Handler<DocumentSaveStateChangedEvent> saveStateHandler =
-      new Handler<DocumentSaveStateChangedEvent>() {
-        @Override
-        public void handle(DocumentSaveStateChangedEvent event) {
-          if (event.isSaving() || event.isPending()) {
-            pbIndeterminate.setVisibility(View.VISIBLE);
-          } else {
-            pbIndeterminate.setVisibility(View.GONE);
-          }
-        }
-      };
   private final RealtimeModel MapModel = new RealtimeModel() {
-
     private CollaborativeMap map;
 
     @Override
@@ -221,11 +210,22 @@ public class CollaborativeMapActivity extends Activity {
           document.close();
           return;
         }
-        pbIndeterminate.setVisibility(View.GONE);
-        document.onDocumentSaveStateChanged(saveStateHandler);
         doc = document;
         mod = doc.getModel();
         root = mod.getRoot();
+
+        pbIndeterminate.setVisibility(View.GONE);
+        doc.onDocumentSaveStateChanged(new Handler<DocumentSaveStateChangedEvent>() {
+          @Override
+          public void handle(DocumentSaveStateChangedEvent event) {
+            if (event.isSaving() || event.isPending()) {
+              pbIndeterminate.setVisibility(View.VISIBLE);
+            } else {
+              pbIndeterminate.setVisibility(View.GONE);
+            }
+          }
+        });
+
         adapter = new MapAdapter((CollaborativeMap) root.get("demo_map"));
         listView.setAdapter(adapter);
         connectMap();

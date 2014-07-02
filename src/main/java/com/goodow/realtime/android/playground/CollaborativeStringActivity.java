@@ -23,14 +23,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+
 import com.goodow.realtime.core.Handler;
 import com.goodow.realtime.store.CollaborativeMap;
 import com.goodow.realtime.store.CollaborativeString;
 import com.goodow.realtime.store.Document;
 import com.goodow.realtime.store.DocumentSaveStateChangedEvent;
 import com.goodow.realtime.store.Model;
-import com.goodow.realtime.store.ObjectChangedEvent;
 import com.goodow.realtime.store.Store;
+import com.goodow.realtime.store.TextDeletedEvent;
+import com.goodow.realtime.store.TextInsertedEvent;
+import com.goodow.realtime.store.UndoRedoStateChangedEvent;
 
 public class CollaborativeStringActivity extends Activity {
 
@@ -48,29 +51,25 @@ public class CollaborativeStringActivity extends Activity {
   private boolean active = false;
 
   private static final String STR_KEY = "demo_string";
-  private final Handler<DocumentSaveStateChangedEvent> saveStateHandler =
-      new Handler<DocumentSaveStateChangedEvent>() {
-        @Override
-        public void handle(DocumentSaveStateChangedEvent event) {
-          if (event.isSaving() || event.isPending()) {
-            pbIndeterminate.setVisibility(View.VISIBLE);
-          } else {
-            pbIndeterminate.setVisibility(View.GONE);
-          }
-        }
-      };
 
   private final RealtimeModel stringModel = new RealtimeModel() {
-
     private CollaborativeString str;
 
     @Override
     public void connectRealtime() {
-      str.onObjectChanged(new Handler<ObjectChangedEvent>() {
+      str.onTextDeleted(new Handler<TextDeletedEvent>() {
         @Override
-        public void handle(ObjectChangedEvent event) {
+        public void handle(TextDeletedEvent event) {
           if (!event.isLocal()) {
-            updateUi();
+            stringText.getText().delete(event.index(), event.index() + event.text().length());
+          }
+        }
+      });
+      str.onTextInserted(new Handler<TextInsertedEvent>() {
+        @Override
+        public void handle(TextInsertedEvent event) {
+          if (!event.isLocal()) {
+            stringText.getText().insert(event.index(), event.text());
           }
         }
       });
@@ -88,7 +87,7 @@ public class CollaborativeStringActivity extends Activity {
         }
 
         @Override
-        public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
           str.setText(stringText.getText().toString());
         }
       });
@@ -164,14 +163,28 @@ public class CollaborativeStringActivity extends Activity {
           document.close();
           return;
         }
-        pbIndeterminate.setVisibility(View.GONE);
-        document.onDocumentSaveStateChanged(saveStateHandler);
-
         doc = document;
         mod = doc.getModel();
         root = mod.getRoot();
-
         connectString();
+
+        pbIndeterminate.setVisibility(View.GONE);
+        doc.onDocumentSaveStateChanged(new Handler<DocumentSaveStateChangedEvent>() {
+          @Override
+          public void handle(DocumentSaveStateChangedEvent event) {
+            if (event.isSaving() || event.isPending()) {
+              pbIndeterminate.setVisibility(View.VISIBLE);
+            } else {
+              pbIndeterminate.setVisibility(View.GONE);
+            }
+          }
+        });
+        mod.onUndoRedoStateChanged(new Handler<UndoRedoStateChangedEvent>() {
+          @Override
+          public void handle(UndoRedoStateChangedEvent event) {
+            event.canRedo();
+          }
+        });
       }
     };
     pbIndeterminate.setVisibility(View.VISIBLE);

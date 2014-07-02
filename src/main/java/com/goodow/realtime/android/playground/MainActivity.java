@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+
 import com.goodow.realtime.core.Handler;
 import com.goodow.realtime.store.Document;
 import com.goodow.realtime.store.Model;
