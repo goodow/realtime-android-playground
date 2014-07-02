@@ -19,7 +19,7 @@
     <string name="step3Description">To collaborate you must Share this document with other users or open this same document in a new window and collaborate with yourself.</string>
 
     <!-- Step4 -->
-    <string name="step4">Step 4  Collaborate</string>
+    <string name="step4">Collaborative Types</string>
     <string name="step4Description">Goodow Realtime collaborative documents are made of 4 types of collaborative elements: String, Lists, Maps and Custom objects. A Goodow Realtime collaborative document can have as many of these collaborative elements as they need. As a demonstration, You will find below UI widgets representing collaborative elements of each type.</string>
 
     <!-- Collaborative strings -->

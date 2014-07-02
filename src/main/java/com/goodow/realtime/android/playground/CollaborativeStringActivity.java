@@ -118,11 +118,13 @@ public class CollaborativeStringActivity extends Activity {
       case R.id.menu_undo:
         if (mod.canUndo()) {
           mod.undo();
+          stringModel.updateUi();
         }
         break;
       case R.id.menu_redo:
         if (mod.canRedo()) {
           mod.redo();
+          stringModel.updateUi();
         }
         break;
     }
@@ -138,8 +140,7 @@ public class CollaborativeStringActivity extends Activity {
     pbIndeterminate = (ProgressBar) findViewById(R.id.pb_indeterminate);
 
     ActionBar actionBar = this.getActionBar();
-//    actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
-//    actionBar.setTitle("CollaborativeString Demo");
+    actionBar.setTitle("CollaborativeString Demo");
   }
 
   @Override
