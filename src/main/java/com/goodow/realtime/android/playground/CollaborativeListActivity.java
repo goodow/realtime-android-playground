@@ -286,8 +286,7 @@ public class CollaborativeListActivity extends Activity {
     bt_setSelected = (Button) findViewById(R.id.bt_setSelectItem);
 
     ActionBar actionBar = this.getActionBar();
-//    actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
-//    actionBar.setTitle("CollabrativeList Demo");
+    actionBar.setTitle("CollabrativeList Demo");
 
     listView.setOnItemClickListener(new OnItemClickListener() {
       @Override

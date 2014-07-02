@@ -275,8 +275,7 @@ public class CollaborativeMapActivity extends Activity {
     pbIndeterminate = (ProgressBar) findViewById(R.id.pb_indeterminateMap);
 
     ActionBar actionBar = this.getActionBar();
-//    actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP, ActionBar.DISPLAY_HOME_AS_UP);
-//    actionBar.setTitle("CollabrativeMap Demo");
+    actionBar.setTitle("CollabrativeMap Demo");
 
     listView.setOnItemClickListener(new OnItemClickListener() {
       @Override
