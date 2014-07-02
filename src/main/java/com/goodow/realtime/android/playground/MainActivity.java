@@ -18,14 +18,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+
 import com.goodow.realtime.core.Handler;
 import com.goodow.realtime.store.Document;
 import com.goodow.realtime.store.Model;
-import com.goodow.realtime.store.Store;
 
 public class MainActivity extends Activity {
   static final String ID = "playground/0";
-  private Store store;
   private Document doc;
   private EditText userIdText;
   private EditText accessTokenText;
@@ -57,8 +56,6 @@ public class MainActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-
-    store = StoreProvider.get();
 
     userIdText = (EditText) findViewById(R.id.userId);
     accessTokenText = (EditText) findViewById(R.id.accessToken);
@@ -99,6 +96,6 @@ public class MainActivity extends Activity {
         CollaborativeMapActivity.initializeModel(model);
       }
     };
-    store.load(docIdText.getText().toString(), onLoaded, opt_initializer, null);
+    StoreProvider.get().load(docIdText.getText().toString(), onLoaded, opt_initializer, null);
   }
 }

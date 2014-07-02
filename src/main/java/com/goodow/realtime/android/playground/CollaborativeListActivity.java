@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.goodow.realtime.core.Handler;
 import com.goodow.realtime.json.Json;
 import com.goodow.realtime.store.CollaborativeList;
@@ -37,7 +38,6 @@ import com.goodow.realtime.store.Document;
 import com.goodow.realtime.store.DocumentSaveStateChangedEvent;
 import com.goodow.realtime.store.Model;
 import com.goodow.realtime.store.ObjectChangedEvent;
-import com.goodow.realtime.store.Store;
 
 public class CollaborativeListActivity extends Activity {
 
@@ -106,19 +106,7 @@ public class CollaborativeListActivity extends Activity {
     mod.getRoot().set(LIST_KEY, list);
   }
 
-  private final Handler<DocumentSaveStateChangedEvent> saveStateHandler =
-      new Handler<DocumentSaveStateChangedEvent>() {
-        @Override
-        public void handle(DocumentSaveStateChangedEvent event) {
-          if (event.isSaving() || event.isPending()) {
-            pbIndeterminate.setVisibility(View.VISIBLE);
-          } else {
-            pbIndeterminate.setVisibility(View.GONE);
-          }
-        }
-      };
-
-  private Store store = StoreProvider.get();
+  private static final String LIST_KEY = "demo_list";
   private ProgressBar pbIndeterminate;
   private Document doc;
   private Model mod;
@@ -134,8 +122,8 @@ public class CollaborativeListActivity extends Activity {
   private Button bt_removeSelection;
   private Button bt_clearList;
   private Button bt_setSelected;
+  private ListAdapter adapter;
 
-  private static final String LIST_KEY = "demo_list";
 
   private final RealtimeModel listModel = new RealtimeModel() {
     private CollaborativeList list;
@@ -210,8 +198,6 @@ public class CollaborativeListActivity extends Activity {
     }
   };
 
-  private ListAdapter adapter;
-
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
@@ -240,18 +226,29 @@ public class CollaborativeListActivity extends Activity {
           document.close();
           return;
         }
-        pbIndeterminate.setVisibility(View.GONE);
-        document.onDocumentSaveStateChanged(saveStateHandler);
         doc = document;
         mod = doc.getModel();
         root = mod.getRoot();
+
+        pbIndeterminate.setVisibility(View.GONE);
+        doc.onDocumentSaveStateChanged(new Handler<DocumentSaveStateChangedEvent>() {
+          @Override
+          public void handle(DocumentSaveStateChangedEvent event) {
+            if (event.isSaving() || event.isPending()) {
+              pbIndeterminate.setVisibility(View.VISIBLE);
+            } else {
+              pbIndeterminate.setVisibility(View.GONE);
+            }
+          }
+        });
+
         adapter = new ListAdapter((CollaborativeList) root.get(LIST_KEY));
         listView.setAdapter(adapter);
         connectList();
       }
     };
     pbIndeterminate.setVisibility(View.VISIBLE);
-    store.load(MainActivity.ID, onLoaded, null, null);
+    StoreProvider.get().load(MainActivity.ID, onLoaded, null, null);
   }
 
   @Override

@@ -16,21 +16,20 @@ package com.goodow.realtime.android.playground;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+
 import com.goodow.realtime.core.Handler;
 import com.goodow.realtime.store.CollaborativeMap;
 import com.goodow.realtime.store.CollaborativeString;
 import com.goodow.realtime.store.Document;
 import com.goodow.realtime.store.DocumentSaveStateChangedEvent;
 import com.goodow.realtime.store.Model;
-import com.goodow.realtime.store.ObjectChangedEvent;
-import com.goodow.realtime.store.Store;
+import com.goodow.realtime.store.UndoRedoStateChangedEvent;
+import com.goodow.realtime.store.databinding.Databinding;
 
 public class CollaborativeStringActivity extends Activity {
 
@@ -39,59 +38,24 @@ public class CollaborativeStringActivity extends Activity {
     mod.getRoot().set(STR_KEY, string);
   }
 
-  private Store store = StoreProvider.get();
+  private static final String STR_KEY = "demo_string";
   private Document doc;
   private Model mod;
   private CollaborativeMap root;
-  private EditText stringText;
+  private EditText textView;
   private ProgressBar pbIndeterminate;
   private boolean active = false;
 
-  private static final String STR_KEY = "demo_string";
-  private final Handler<DocumentSaveStateChangedEvent> saveStateHandler =
-      new Handler<DocumentSaveStateChangedEvent>() {
-        @Override
-        public void handle(DocumentSaveStateChangedEvent event) {
-          if (event.isSaving() || event.isPending()) {
-            pbIndeterminate.setVisibility(View.VISIBLE);
-          } else {
-            pbIndeterminate.setVisibility(View.GONE);
-          }
-        }
-      };
-
   private final RealtimeModel stringModel = new RealtimeModel() {
-
     private CollaborativeString str;
 
     @Override
     public void connectRealtime() {
-      str.onObjectChanged(new Handler<ObjectChangedEvent>() {
-        @Override
-        public void handle(ObjectChangedEvent event) {
-          if (!event.isLocal()) {
-            updateUi();
-          }
-        }
-      });
     }
 
     @Override
     public void connectUi() {
-      stringText.addTextChangedListener(new TextWatcher() {
-        @Override
-        public void afterTextChanged(Editable arg0) {
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-          str.setText(stringText.getText().toString());
-        }
-      });
+      Databinding.bindString(str, textView);
     }
 
     @Override
@@ -101,7 +65,7 @@ public class CollaborativeStringActivity extends Activity {
 
     @Override
     public void updateUi() {
-      stringText.setText(str.getText());
+      textView.setText(str.getText());
     }
   };
 
@@ -136,7 +100,7 @@ public class CollaborativeStringActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_collaborativestring);
 
-    stringText = (EditText) findViewById(R.id.editText);
+    textView = (EditText) findViewById(R.id.editText);
     pbIndeterminate = (ProgressBar) findViewById(R.id.pb_indeterminate);
 
     ActionBar actionBar = this.getActionBar();
@@ -164,18 +128,32 @@ public class CollaborativeStringActivity extends Activity {
           document.close();
           return;
         }
-        pbIndeterminate.setVisibility(View.GONE);
-        document.onDocumentSaveStateChanged(saveStateHandler);
-
         doc = document;
         mod = doc.getModel();
         root = mod.getRoot();
-
         connectString();
+
+        pbIndeterminate.setVisibility(View.GONE);
+        doc.onDocumentSaveStateChanged(new Handler<DocumentSaveStateChangedEvent>() {
+          @Override
+          public void handle(DocumentSaveStateChangedEvent event) {
+            if (event.isSaving() || event.isPending()) {
+              pbIndeterminate.setVisibility(View.VISIBLE);
+            } else {
+              pbIndeterminate.setVisibility(View.GONE);
+            }
+          }
+        });
+        mod.onUndoRedoStateChanged(new Handler<UndoRedoStateChangedEvent>() {
+          @Override
+          public void handle(UndoRedoStateChangedEvent event) {
+            event.canRedo();
+          }
+        });
       }
     };
     pbIndeterminate.setVisibility(View.VISIBLE);
-    store.load(MainActivity.ID, onLoaded, null, null);
+    StoreProvider.get().load(MainActivity.ID, onLoaded, null, null);
   }
 
   private void connectString() {

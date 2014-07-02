@@ -29,52 +29,49 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.goodow.realtime.core.Handler;
 import com.goodow.realtime.store.CollaborativeMap;
 import com.goodow.realtime.store.Document;
 import com.goodow.realtime.store.DocumentSaveStateChangedEvent;
 import com.goodow.realtime.store.Model;
 import com.goodow.realtime.store.ObjectChangedEvent;
-import com.goodow.realtime.store.Store;
 
 public class CollaborativeMapActivity extends Activity {
 
   static class ViewHolder {
-    TextView keys;
-    TextView values;
+    TextView key;
+    TextView value;
   }
 
   private class MapAdapter extends BaseAdapter {
-    private final CollaborativeMap collaborativeMap;
+    private final CollaborativeMap map;
 
-    /**
-     * @param collaborativeMap
-     */
-    public MapAdapter(CollaborativeMap collaborativeMap) {
+    public MapAdapter(CollaborativeMap map) {
       super();
-      this.collaborativeMap = collaborativeMap;
+      this.map = map;
     }
 
     public void addItem(String key, String value) {
-      this.collaborativeMap.set(key, value);
+      this.map.set(key, value);
       this.notifyDataSetChanged();
     }
 
     public void clear() {
-      this.collaborativeMap.clear();
+      this.map.clear();
       this.notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-      return collaborativeMap.size();
+      return map.size();
     }
 
     @Override
     public Object getItem(int position) {
       String[] string = new String[2];
-      string[0] = collaborativeMap.keys().getString(position);
-      string[1] = collaborativeMap.get(collaborativeMap.keys().getString(position));
+      string[0] = map.keys().getString(position);
+      string[1] = map.get(map.keys().getString(position));
       return string;
 
     }
@@ -94,23 +91,22 @@ public class CollaborativeMapActivity extends Activity {
       } else {
         view = View.inflate(getApplicationContext(), R.layout.collaborativemaps_item, null);
         holder = new ViewHolder();
-        holder.keys = (TextView) view.findViewById(R.id.tv_key);
-        holder.values = (TextView) view.findViewById(R.id.tv_value);
+        holder.key = (TextView) view.findViewById(R.id.tv_key);
+        holder.value = (TextView) view.findViewById(R.id.tv_value);
         view.setTag(holder);
       }
-      holder.keys.setText(collaborativeMap.keys().getString(position));
-      holder.values.setText((String) collaborativeMap.get(collaborativeMap.keys().getString(position)));
+      holder.key.setText(map.keys().getString(position));
+      holder.value.setText((String) map.get(map.keys().getString(position)));
       return view;
     }
 
     public void removeItem(String key) {
-      this.collaborativeMap.remove(key);
+      this.map.remove(key);
       this.notifyDataSetChanged();
     }
-
   }
 
-  private Store store = StoreProvider.get();
+  private static final String MAP_KEY = "demo_map";
   private Document doc;
   private Model mod;
   private CollaborativeMap root;
@@ -126,8 +122,6 @@ public class CollaborativeMapActivity extends Activity {
   private Button bt_putKeyAndValue;
   private ProgressBar pbIndeterminate;
 
-  private static final String MAP_KEY = "demo_map";
-
   public static void initializeModel(Model mod) {
     CollaborativeMap map = mod.createMap(null);
     map.set("Key 1", "Value 1");
@@ -137,19 +131,7 @@ public class CollaborativeMapActivity extends Activity {
     mod.getRoot().set(MAP_KEY, map);
   }
 
-  private final Handler<DocumentSaveStateChangedEvent> saveStateHandler =
-      new Handler<DocumentSaveStateChangedEvent>() {
-        @Override
-        public void handle(DocumentSaveStateChangedEvent event) {
-          if (event.isSaving() || event.isPending()) {
-            pbIndeterminate.setVisibility(View.VISIBLE);
-          } else {
-            pbIndeterminate.setVisibility(View.GONE);
-          }
-        }
-      };
   private final RealtimeModel MapModel = new RealtimeModel() {
-
     private CollaborativeMap map;
 
     @Override
@@ -221,18 +203,29 @@ public class CollaborativeMapActivity extends Activity {
           document.close();
           return;
         }
-        pbIndeterminate.setVisibility(View.GONE);
-        document.onDocumentSaveStateChanged(saveStateHandler);
         doc = document;
         mod = doc.getModel();
         root = mod.getRoot();
+
+        pbIndeterminate.setVisibility(View.GONE);
+        doc.onDocumentSaveStateChanged(new Handler<DocumentSaveStateChangedEvent>() {
+          @Override
+          public void handle(DocumentSaveStateChangedEvent event) {
+            if (event.isSaving() || event.isPending()) {
+              pbIndeterminate.setVisibility(View.VISIBLE);
+            } else {
+              pbIndeterminate.setVisibility(View.GONE);
+            }
+          }
+        });
+
         adapter = new MapAdapter((CollaborativeMap) root.get("demo_map"));
         listView.setAdapter(adapter);
         connectMap();
       }
     };
     pbIndeterminate.setVisibility(View.VISIBLE);
-    store.load(MainActivity.ID, onLoaded, null, null);
+    StoreProvider.get().load(MainActivity.ID, onLoaded, null, null);
   }
 
   @Override
