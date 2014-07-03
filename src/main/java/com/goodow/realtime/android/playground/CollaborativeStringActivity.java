@@ -18,8 +18,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -34,7 +36,6 @@ import com.goodow.realtime.store.Model;
 import com.goodow.realtime.store.Store;
 import com.goodow.realtime.store.TextDeletedEvent;
 import com.goodow.realtime.store.TextInsertedEvent;
-
 import com.goodow.realtime.store.UndoRedoStateChangedEvent;
 
 public class CollaborativeStringActivity extends Activity {
@@ -50,7 +51,7 @@ public class CollaborativeStringActivity extends Activity {
   private CollaborativeMap root;
   private IndexReference cursorStart;
   private IndexReference cursorEnd;
-  private EditText stringText;
+  private CursorEditText stringText;
   private ProgressBar pbIndeterminate;
   private boolean active = false;
 
@@ -77,6 +78,11 @@ public class CollaborativeStringActivity extends Activity {
           }
         }
       });
+      str.onTextDeleted(new Handler<TextDeletedEvent>() {
+        @Override
+        public void handle(TextDeletedEvent textDeletedEvent) {
+        }
+      });
     }
 
     @Override
@@ -93,6 +99,13 @@ public class CollaborativeStringActivity extends Activity {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
           str.setText(stringText.getText().toString());
+        }
+      });
+      stringText.setOnCusorChangedListener(new OnCursorChangedListener() {
+        @Override
+        public void onCursorChanged(int startIndex, int endIndex) {
+          cursorStart.setIndex(startIndex);
+          cursorEnd.setIndex(endIndex);
         }
       });
     }
@@ -146,7 +159,7 @@ public class CollaborativeStringActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_collaborativestring);
 
-    stringText = (EditText) findViewById(R.id.editText);
+    stringText = (CursorEditText) findViewById(R.id.editText);
     pbIndeterminate = (ProgressBar) findViewById(R.id.pb_indeterminate);
 
     ActionBar actionBar = this.getActionBar();
