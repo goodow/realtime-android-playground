@@ -126,6 +126,7 @@ public class CollaborativeMapActivity extends Activity {
   private Button bt_clearTheMap;
   private Button bt_putKeyAndValue;
   private ProgressBar pbIndeterminate;
+  private Menu menu;
 
   private static final String MAP_KEY = "demo_map";
 
@@ -195,6 +196,7 @@ public class CollaborativeMapActivity extends Activity {
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
     getMenuInflater().inflate(R.menu.main, menu);
+    this.menu = menu;
     return true;
   }
 
@@ -225,7 +227,7 @@ public class CollaborativeMapActivity extends Activity {
             }
           }
         });
-
+        Util.autoUndoRedoByDoc(menu, doc);
         adapter = new MapAdapter((CollaborativeMap) root.get("demo_map"));
         listView.setAdapter(adapter);
         connectMap();
@@ -242,23 +244,6 @@ public class CollaborativeMapActivity extends Activity {
     if (doc != null) {
       doc.close();
     }
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.menu_undo:
-        if (mod.canUndo()) {
-          mod.undo();
-        }
-        break;
-      case R.id.menu_redo:
-        if (mod.canRedo()) {
-          mod.redo();
-        }
-        break;
-    }
-    return super.onOptionsItemSelected(item);
   }
 
   @Override

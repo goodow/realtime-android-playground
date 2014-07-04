@@ -1,14 +1,16 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/menu_undo"
+        android:enabled="false"
+        android:icon="@drawable/action_undo_selector"
         android:orderInCategory="0"
-        android:showAsAction="always"
-        android:icon="@drawable/action_undo"/>
+        android:showAsAction="always"/>
     <item
         android:id="@+id/menu_redo"
+        android:enabled="false"
+        android:icon="@drawable/action_redo_selector"
         android:orderInCategory="1"
-        android:showAsAction="always"
-        android:icon="@drawable/action_redo"/>
+        android:showAsAction="always"/>
 
 </menu>

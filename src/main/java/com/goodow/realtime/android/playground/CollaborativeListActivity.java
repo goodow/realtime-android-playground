@@ -17,7 +17,6 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -123,6 +122,7 @@ public class CollaborativeListActivity extends Activity {
   private Button bt_removeSelection;
   private Button bt_clearList;
   private Button bt_setSelected;
+  private Menu menu;
 
   private static final String LIST_KEY = "demo_list";
 
@@ -205,6 +205,7 @@ public class CollaborativeListActivity extends Activity {
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
     getMenuInflater().inflate(R.menu.main, menu);
+    this.menu = menu;
     return true;
   }
 
@@ -244,7 +245,7 @@ public class CollaborativeListActivity extends Activity {
             }
           }
         });
-
+        Util.autoUndoRedoByDoc(menu, doc);
         adapter = new ListAdapter((CollaborativeList) root.get(LIST_KEY));
         listView.setAdapter(adapter);
         connectList();
@@ -252,23 +253,6 @@ public class CollaborativeListActivity extends Activity {
     };
     pbIndeterminate.setVisibility(View.VISIBLE);
     store.load(MainActivity.ID, onLoaded, null, null);
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.menu_undo:
-        if (mod.canUndo()) {
-          mod.undo();
-        }
-        break;
-      case R.id.menu_redo:
-        if (mod.canRedo()) {
-          mod.redo();
-        }
-        break;
-    }
-    return super.onOptionsItemSelected(item);
   }
 
   @Override

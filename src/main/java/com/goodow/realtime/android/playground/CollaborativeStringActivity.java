@@ -38,6 +38,8 @@ import com.goodow.realtime.store.TextDeletedEvent;
 import com.goodow.realtime.store.TextInsertedEvent;
 import com.goodow.realtime.store.UndoRedoStateChangedEvent;
 
+import javax.xml.soap.Text;
+
 public class CollaborativeStringActivity extends Activity {
 
   public static void initializeModel(Model mod) {
@@ -64,23 +66,18 @@ public class CollaborativeStringActivity extends Activity {
     public void connectRealtime() {
       str.onTextDeleted(new Handler<TextDeletedEvent>() {
         @Override
-        public void handle(TextDeletedEvent event) {
-          if (!event.isLocal()) {
-            stringText.getText().delete(event.index(), event.index() + event.text().length());
+        public void handle(TextDeletedEvent textDeletedEvent) {
+          if(!textDeletedEvent.isLocal()) {
+            deleteText(textDeletedEvent.index(), textDeletedEvent.text());
           }
         }
       });
       str.onTextInserted(new Handler<TextInsertedEvent>() {
         @Override
-        public void handle(TextInsertedEvent event) {
-          if (!event.isLocal()) {
-            stringText.getText().insert(event.index(), event.text());
+        public void handle(TextInsertedEvent textInsertedEvent) {
+          if(!textInsertedEvent.isLocal()) {
+            insertText(textInsertedEvent.index(), textInsertedEvent.text());
           }
-        }
-      });
-      str.onTextDeleted(new Handler<TextDeletedEvent>() {
-        @Override
-        public void handle(TextDeletedEvent textDeletedEvent) {
         }
       });
     }
@@ -101,7 +98,7 @@ public class CollaborativeStringActivity extends Activity {
           str.setText(stringText.getText().toString());
         }
       });
-      stringText.setOnCusorChangedListener(new OnCursorChangedListener() {
+      stringText.setOnCusorChangedListener(new CursorEditText.OnCursorChangedListener() {
         @Override
         public void onCursorChanged(int startIndex, int endIndex) {
           cursorStart.setIndex(startIndex);
@@ -121,6 +118,16 @@ public class CollaborativeStringActivity extends Activity {
     public void updateUi() {
       stringText.setText(str.getText());
       stringText.setSelection(guardedCursor(cursorStart.index()), guardedCursor(cursorEnd.index()));
+    }
+
+    private void deleteText(int index, String str) {
+      Editable text = stringText.getText();
+      text.delete(index-str.length()+1, index+1);
+    }
+
+    private void insertText(int index, String str) {
+      Editable text = stringText.getText();
+      text.insert(index, str);
     }
 
     private int guardedCursor(int cursor) {
@@ -203,12 +210,7 @@ public class CollaborativeStringActivity extends Activity {
             }
           }
         });
-        mod.onUndoRedoStateChanged(new Handler<UndoRedoStateChangedEvent>() {
-          @Override
-          public void handle(UndoRedoStateChangedEvent event) {
-            event.canRedo();
-          }
-        });
+//        Util.autoUndoRedoByDoc(CollaborativeStringActivity.this, doc);
       }
     };
     pbIndeterminate.setVisibility(View.VISIBLE);
