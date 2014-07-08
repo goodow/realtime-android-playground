@@ -15,14 +15,17 @@ package com.goodow.realtime.android.playground;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.goodow.realtime.core.Handler;
 import com.goodow.realtime.store.Document;
+import com.goodow.realtime.store.DocumentSaveStateChangedEvent;
 import com.goodow.realtime.store.Model;
 import com.goodow.realtime.store.UndoRedoStateChangedEvent;
 
-public class Util {
-  public static void autoUndoRedoByDoc(Menu menu, Document doc){
+public class Utils {
+  public static void autoSetUndoRedoByDoc(Menu menu, Document doc, final RealtimeModel realtimeModel) {
     final Model model = doc.getModel();
     final MenuItem menu_undo = menu.findItem(R.id.menu_undo);
     final MenuItem menu_redo = menu.findItem(R.id.menu_redo);
@@ -30,6 +33,7 @@ public class Util {
       @Override
       public boolean onMenuItemClick(MenuItem item) {
         model.undo();
+        realtimeModel.updateUi();
         return false;
       }
     });
@@ -37,6 +41,7 @@ public class Util {
       @Override
       public boolean onMenuItemClick(MenuItem item) {
         model.redo();
+        realtimeModel.updateUi();
         return false;
       }
     });
@@ -49,4 +54,19 @@ public class Util {
       }
     });
   }
+
+  public static void autoSetProgressBarByDoc(final ProgressBar progressBar, Document doc) {
+    progressBar.setVisibility(View.INVISIBLE);
+    doc.onDocumentSaveStateChanged(new Handler<DocumentSaveStateChangedEvent>() {
+      @Override
+      public void handle(DocumentSaveStateChangedEvent event) {
+        if (event.isSaving() || event.isPending()) {
+          progressBar.setVisibility(View.VISIBLE);
+        } else {
+          progressBar.setVisibility(View.INVISIBLE);
+        }
+      }
+    });
+  }
+
 }

@@ -12,7 +12,7 @@
         android:layout_gravity="top"
         android:layout_marginBottom="-8.0dip"
         android:layout_marginTop="-6.0dip"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <com.goodow.realtime.android.playground.CursorEditText
         android:id="@+id/editText"

@@ -15,6 +15,7 @@ package com.goodow.realtime.android.playground;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.EditText;
 
 public class CursorEditText extends EditText {
@@ -28,7 +29,6 @@ public class CursorEditText extends EditText {
   }
 
   private OnCursorChangedListener listener;
-  private boolean isSetText;
 
   public void setOnCusorChangedListener(OnCursorChangedListener listener) {
     this.listener = listener;
@@ -39,17 +39,8 @@ public class CursorEditText extends EditText {
   protected void onSelectionChanged(int selStart, int selEnd) {
     super.onSelectionChanged(selStart, selEnd);
     if (listener != null) {
-      if(!isSetText) {
-        listener.onCursorChanged(selStart, selEnd);
-      } else {
-        isSetText = false;
-      }
+      listener.onCursorChanged(selStart, selEnd);
     }
   }
 
-  @Override
-  public void setText(CharSequence text, BufferType type) {
-    isSetText = true;
-    super.setText(text, type);
-  }
 }
