@@ -13,63 +13,56 @@
  */
 package com.goodow.realtime.android.playground;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 
 import com.goodow.realtime.core.Handler;
-import com.goodow.realtime.store.CollaborativeMap;
 import com.goodow.realtime.store.CollaborativeString;
-import com.goodow.realtime.store.Document;
-import com.goodow.realtime.store.DocumentSaveStateChangedEvent;
+import com.goodow.realtime.store.IndexReference;
 import com.goodow.realtime.store.Model;
-import com.goodow.realtime.store.Store;
 import com.goodow.realtime.store.TextDeletedEvent;
 import com.goodow.realtime.store.TextInsertedEvent;
-import com.goodow.realtime.store.UndoRedoStateChangedEvent;
 
-public class CollaborativeStringActivity extends Activity {
+public class CollaborativeStringActivity extends BaseActivity {
 
   public static void initializeModel(Model mod) {
     CollaborativeString string = mod.createString("Edit Me!");
     mod.getRoot().set(STR_KEY, string);
   }
 
-  private Store store = StoreProvider.get();
-  private Document doc;
-  private Model mod;
-  private CollaborativeMap root;
-  private EditText stringText;
-  private ProgressBar pbIndeterminate;
-  private boolean active = false;
+  private IndexReference cursorStart;
+  private IndexReference cursorEnd;
+  private CursorEditText stringText;
 
   private static final String STR_KEY = "demo_string";
 
-  private final RealtimeModel stringModel = new RealtimeModel() {
+  private class StringModel implements RealtimeModel {
     private CollaborativeString str;
+    private boolean isTextChangedLocal = true;
+    private boolean isCursorChangedLocal = true;
 
     @Override
     public void connectRealtime() {
       str.onTextDeleted(new Handler<TextDeletedEvent>() {
         @Override
         public void handle(TextDeletedEvent event) {
-          if (!event.isLocal()) {
+          if(!event.isLocal()) {
+            isTextChangedLocal = false;
+            isCursorChangedLocal = false;
             stringText.getText().delete(event.index(), event.index() + event.text().length());
+            reSelectText();
           }
         }
       });
       str.onTextInserted(new Handler<TextInsertedEvent>() {
         @Override
         public void handle(TextInsertedEvent event) {
-          if (!event.isLocal()) {
+          if(!event.isLocal()) {
+            isTextChangedLocal = false;
+            isCursorChangedLocal = false;
             stringText.getText().insert(event.index(), event.text());
+            reSelectText();
           }
         }
       });
@@ -88,7 +81,23 @@ public class CollaborativeStringActivity extends Activity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+          if (!isTextChangedLocal) {
+            isTextChangedLocal = true;
+            return;
+          }
           str.setText(stringText.getText().toString());
+        }
+
+      });
+      stringText.setOnCusorChangedListener(new CursorEditText.OnCursorChangedListener() {
+        @Override
+        public void onCursorChanged(int startIndex, int endIndex) {
+          if (!isCursorChangedLocal) {
+            isCursorChangedLocal = true;
+            return;
+          }
+          cursorStart.setIndex(startIndex);
+          cursorEnd.setIndex(endIndex);
         }
       });
     }
@@ -96,105 +105,36 @@ public class CollaborativeStringActivity extends Activity {
     @Override
     public void loadField() {
       str = root.get(STR_KEY);
+      cursorStart = str.registerReference(0, false);
+      cursorEnd = str.registerReference(0, false);
     }
 
     @Override
     public void updateUi() {
       stringText.setText(str.getText());
     }
-  };
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.main, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.menu_undo:
-        if (mod.canUndo()) {
-          mod.undo();
-          stringModel.updateUi();
-        }
-        break;
-      case R.id.menu_redo:
-        if (mod.canRedo()) {
-          mod.redo();
-          stringModel.updateUi();
-        }
-        break;
+    private void reSelectText() {
+      stringText.setSelection(guardedCursor(cursorStart.index()), guardedCursor(cursorEnd.index()));
+      if(stringText.getSelectionStart() != stringText.getSelectionEnd()) {
+        stringText.performLongClick();
+      }
     }
-    return super.onOptionsItemSelected(item);
+
+    private int guardedCursor(int cursor) {
+      return cursor < 0 ? 0 : cursor;
+    }
   }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_collaborativestring);
+    super.onCreate(savedInstanceState);
 
-    stringText = (EditText) findViewById(R.id.editText);
-    pbIndeterminate = (ProgressBar) findViewById(R.id.pb_indeterminate);
+    stringText = (CursorEditText) findViewById(R.id.editText);
 
-    ActionBar actionBar = this.getActionBar();
     actionBar.setTitle("CollaborativeString Demo");
+    model = new StringModel();
   }
 
-  @Override
-  protected void onPause() {
-    super.onPause();
-    active = false;
-    if (doc != null) {
-      doc.close();
-    }
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-    active = true;
-
-    Handler<Document> onLoaded = new Handler<Document>() {
-      @Override
-      public void handle(Document document) {
-        if (!active) {
-          document.close();
-          return;
-        }
-        doc = document;
-        mod = doc.getModel();
-        root = mod.getRoot();
-        connectString();
-
-        pbIndeterminate.setVisibility(View.GONE);
-        doc.onDocumentSaveStateChanged(new Handler<DocumentSaveStateChangedEvent>() {
-          @Override
-          public void handle(DocumentSaveStateChangedEvent event) {
-            if (event.isSaving() || event.isPending()) {
-              pbIndeterminate.setVisibility(View.VISIBLE);
-            } else {
-              pbIndeterminate.setVisibility(View.GONE);
-            }
-          }
-        });
-        mod.onUndoRedoStateChanged(new Handler<UndoRedoStateChangedEvent>() {
-          @Override
-          public void handle(UndoRedoStateChangedEvent event) {
-            event.canRedo();
-          }
-        });
-      }
-    };
-    pbIndeterminate.setVisibility(View.VISIBLE);
-    store.load(MainActivity.ID, onLoaded, null, null);
-  }
-
-  private void connectString() {
-    stringModel.loadField();
-    stringModel.updateUi();
-    stringModel.connectUi();
-    stringModel.connectRealtime();
-  }
 }

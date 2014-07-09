@@ -12,9 +12,9 @@
         android:layout_gravity="top"
         android:layout_marginBottom="-8.0dip"
         android:layout_marginTop="-6.0dip"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
-    <EditText
+    <com.goodow.realtime.android.playground.CursorEditText
         android:id="@+id/editText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -22,6 +22,6 @@
         android:inputType="textMultiLine" >
 
         <requestFocus />
-    </EditText>
+    </com.goodow.realtime.android.playground.CursorEditText>
 
 </FrameLayout>

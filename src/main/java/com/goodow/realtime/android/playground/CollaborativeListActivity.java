@@ -13,11 +13,7 @@
  */
 package com.goodow.realtime.android.playground;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -27,26 +23,20 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.goodow.realtime.core.Handler;
 import com.goodow.realtime.json.Json;
 import com.goodow.realtime.store.CollaborativeList;
-import com.goodow.realtime.store.CollaborativeMap;
-import com.goodow.realtime.store.Document;
-import com.goodow.realtime.store.DocumentSaveStateChangedEvent;
 import com.goodow.realtime.store.Model;
 import com.goodow.realtime.store.ObjectChangedEvent;
-import com.goodow.realtime.store.Store;
 
-public class CollaborativeListActivity extends Activity {
+public class CollaborativeListActivity extends BaseActivity {
 
   private class ListAdapter extends BaseAdapter {
-    private final CollaborativeList collaborativeList;
+    private CollaborativeList collaborativeList;
 
-    public ListAdapter(CollaborativeList collaborativeList) {
-      super();
+    public void setCollaborativeList(CollaborativeList collaborativeList) {
       this.collaborativeList = collaborativeList;
     }
 
@@ -63,7 +53,11 @@ public class CollaborativeListActivity extends Activity {
 
     @Override
     public int getCount() {
-      return collaborativeList.length();
+      if(collaborativeList != null) {
+        return collaborativeList.length();
+      } else {
+        return 0;
+      }
     }
 
     @Override
@@ -79,7 +73,7 @@ public class CollaborativeListActivity extends Activity {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
       View view;
-      TextView textView = null;
+      TextView textView;
       if (convertView != null) {
         view = convertView;
       } else {
@@ -107,13 +101,6 @@ public class CollaborativeListActivity extends Activity {
     mod.getRoot().set(LIST_KEY, list);
   }
 
-  private Store store = StoreProvider.get();
-  private ProgressBar pbIndeterminate;
-  private Document doc;
-  private Model mod;
-  private CollaborativeMap root;
-  private boolean active = false;
-
   private int currentSelected = -1;
 
   private ListView listView;
@@ -123,10 +110,11 @@ public class CollaborativeListActivity extends Activity {
   private Button bt_removeSelection;
   private Button bt_clearList;
   private Button bt_setSelected;
+  private ListAdapter adapter;
 
   private static final String LIST_KEY = "demo_list";
 
-  private final RealtimeModel listModel = new RealtimeModel() {
+  private class ListModel implements RealtimeModel {
     private CollaborativeList list;
 
     @Override
@@ -134,7 +122,9 @@ public class CollaborativeListActivity extends Activity {
       list.onObjectChanged(new Handler<ObjectChangedEvent>() {
         @Override
         public void handle(ObjectChangedEvent event) {
-          updateUi();
+          if(!event.isLocal()) {
+            updateUi();
+          }
         }
       });
     }
@@ -194,89 +184,16 @@ public class CollaborativeListActivity extends Activity {
 
     @Override
     public void updateUi() {
-      // adapter.setCollaborativeList(list);
+      adapter.setCollaborativeList((CollaborativeList) root.get(LIST_KEY));
       adapter.notifyDataSetChanged();
     }
-  };
-
-  private ListAdapter adapter;
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.main, menu);
-    return true;
-  }
-
-  @Override
-  protected void onPause() {
-    super.onPause();
-    active = false;
-    if (doc != null) {
-      doc.close();
-    }
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-    active = true;
-
-    Handler<Document> onLoaded = new Handler<Document>() {
-      @Override
-      public void handle(Document document) {
-        if (!active) {
-          document.close();
-          return;
-        }
-        doc = document;
-        mod = doc.getModel();
-        root = mod.getRoot();
-
-        pbIndeterminate.setVisibility(View.GONE);
-        doc.onDocumentSaveStateChanged(new Handler<DocumentSaveStateChangedEvent>() {
-          @Override
-          public void handle(DocumentSaveStateChangedEvent event) {
-            if (event.isSaving() || event.isPending()) {
-              pbIndeterminate.setVisibility(View.VISIBLE);
-            } else {
-              pbIndeterminate.setVisibility(View.GONE);
-            }
-          }
-        });
-
-        adapter = new ListAdapter((CollaborativeList) root.get(LIST_KEY));
-        listView.setAdapter(adapter);
-        connectList();
-      }
-    };
-    pbIndeterminate.setVisibility(View.VISIBLE);
-    store.load(MainActivity.ID, onLoaded, null, null);
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.menu_undo:
-        if (mod.canUndo()) {
-          mod.undo();
-        }
-        break;
-      case R.id.menu_redo:
-        if (mod.canRedo()) {
-          mod.redo();
-        }
-        break;
-    }
-    return super.onOptionsItemSelected(item);
   }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_collaborativelist);
+    super.onCreate(savedInstanceState);
 
-    pbIndeterminate = (ProgressBar) findViewById(R.id.pb_indeterminateList);
     listView = (ListView) findViewById(R.id.CollaborativeList);
     toSet = (EditText) findViewById(R.id.selectItem);
     toAdd = (EditText) findViewById(R.id.AddAnItem);
@@ -285,7 +202,6 @@ public class CollaborativeListActivity extends Activity {
     bt_clearList = (Button) findViewById(R.id.bt_clearTheList);
     bt_setSelected = (Button) findViewById(R.id.bt_setSelectItem);
 
-    ActionBar actionBar = this.getActionBar();
     actionBar.setTitle("CollabrativeList Demo");
 
     listView.setOnItemClickListener(new OnItemClickListener() {
@@ -298,13 +214,9 @@ public class CollaborativeListActivity extends Activity {
         currentSelected = position;
       }
     });
-
+    adapter = new ListAdapter();
+    listView.setAdapter(adapter);
+    model = new ListModel();
   }
 
-  private void connectList() {
-    listModel.loadField();
-    listModel.updateUi();
-    listModel.connectUi();
-    listModel.connectRealtime();
-  }
 }

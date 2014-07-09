@@ -13,11 +13,7 @@
  */
 package com.goodow.realtime.android.playground;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -27,18 +23,14 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.goodow.realtime.core.Handler;
 import com.goodow.realtime.store.CollaborativeMap;
-import com.goodow.realtime.store.Document;
-import com.goodow.realtime.store.DocumentSaveStateChangedEvent;
 import com.goodow.realtime.store.Model;
 import com.goodow.realtime.store.ObjectChangedEvent;
-import com.goodow.realtime.store.Store;
 
-public class CollaborativeMapActivity extends Activity {
+public class CollaborativeMapActivity extends BaseActivity {
 
   static class ViewHolder {
     TextView keys;
@@ -46,13 +38,9 @@ public class CollaborativeMapActivity extends Activity {
   }
 
   private class MapAdapter extends BaseAdapter {
-    private final CollaborativeMap collaborativeMap;
+    private CollaborativeMap collaborativeMap;
 
-    /**
-     * @param collaborativeMap
-     */
-    public MapAdapter(CollaborativeMap collaborativeMap) {
-      super();
+    public void setCollaborativeMap(CollaborativeMap collaborativeMap) {
       this.collaborativeMap = collaborativeMap;
     }
 
@@ -68,7 +56,11 @@ public class CollaborativeMapActivity extends Activity {
 
     @Override
     public int getCount() {
-      return collaborativeMap.size();
+      if(collaborativeMap != null) {
+        return collaborativeMap.size();
+      } else {
+        return 0;
+      }
     }
 
     @Override
@@ -111,21 +103,13 @@ public class CollaborativeMapActivity extends Activity {
 
   }
 
-  private Store store = StoreProvider.get();
-  private Document doc;
-  private Model mod;
-  private CollaborativeMap root;
-  private boolean active = false;
-
   private MapAdapter adapter;
-
   private ListView listView;
   private EditText itemKey;
   private EditText itemValue;
   private Button bt_removeSelectItem;
   private Button bt_clearTheMap;
   private Button bt_putKeyAndValue;
-  private ProgressBar pbIndeterminate;
 
   private static final String MAP_KEY = "demo_map";
 
@@ -138,7 +122,7 @@ public class CollaborativeMapActivity extends Activity {
     mod.getRoot().set(MAP_KEY, map);
   }
 
-  private final RealtimeModel MapModel = new RealtimeModel() {
+  private class MapModel implements RealtimeModel {
     private CollaborativeMap map;
 
     @Override
@@ -146,7 +130,9 @@ public class CollaborativeMapActivity extends Activity {
       map.onObjectChanged(new Handler<ObjectChangedEvent>() {
         @Override
         public void handle(ObjectChangedEvent event) {
-          updateUi();
+          if(!event.isLocal()) {
+            updateUi();
+          }
         }
       });
 
@@ -187,84 +173,15 @@ public class CollaborativeMapActivity extends Activity {
 
     @Override
     public void updateUi() {
+      adapter.setCollaborativeMap((CollaborativeMap) root.get("demo_map"));
       adapter.notifyDataSetChanged();
     }
-  };
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.main, menu);
-    return true;
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-    active = true;
-
-    Handler<Document> onLoaded = new Handler<Document>() {
-      @Override
-      public void handle(Document document) {
-        if (!active) {
-          document.close();
-          return;
-        }
-        doc = document;
-        mod = doc.getModel();
-        root = mod.getRoot();
-
-        pbIndeterminate.setVisibility(View.GONE);
-        doc.onDocumentSaveStateChanged(new Handler<DocumentSaveStateChangedEvent>() {
-          @Override
-          public void handle(DocumentSaveStateChangedEvent event) {
-            if (event.isSaving() || event.isPending()) {
-              pbIndeterminate.setVisibility(View.VISIBLE);
-            } else {
-              pbIndeterminate.setVisibility(View.GONE);
-            }
-          }
-        });
-
-        adapter = new MapAdapter((CollaborativeMap) root.get("demo_map"));
-        listView.setAdapter(adapter);
-        connectMap();
-      }
-    };
-    pbIndeterminate.setVisibility(View.VISIBLE);
-    store.load(MainActivity.ID, onLoaded, null, null);
-  }
-
-  @Override
-  protected void onPause() {
-    super.onPause();
-    active = false;
-    if (doc != null) {
-      doc.close();
-    }
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.menu_undo:
-        if (mod.canUndo()) {
-          mod.undo();
-        }
-        break;
-      case R.id.menu_redo:
-        if (mod.canRedo()) {
-          mod.redo();
-        }
-        break;
-    }
-    return super.onOptionsItemSelected(item);
   }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_collaborativemap);
+    super.onCreate(savedInstanceState);
 
     listView = (ListView) findViewById(R.id.CollaborativeMap);
     itemKey = (EditText) findViewById(R.id.itemKey);
@@ -272,9 +189,7 @@ public class CollaborativeMapActivity extends Activity {
     bt_removeSelectItem = (Button) findViewById(R.id.bt_removeSelectMap);
     bt_clearTheMap = (Button) findViewById(R.id.bt_clearTheMap);
     bt_putKeyAndValue = (Button) findViewById(R.id.bt_putKeyAndValue);
-    pbIndeterminate = (ProgressBar) findViewById(R.id.pb_indeterminateMap);
 
-    ActionBar actionBar = this.getActionBar();
     actionBar.setTitle("CollabrativeMap Demo");
 
     listView.setOnItemClickListener(new OnItemClickListener() {
@@ -288,13 +203,9 @@ public class CollaborativeMapActivity extends Activity {
         }
       }
     });
-  }
-
-  private void connectMap() {
-    MapModel.loadField();
-    MapModel.updateUi();
-    MapModel.connectUi();
-    MapModel.connectRealtime();
+    adapter = new MapAdapter();
+    listView.setAdapter(adapter);
+    model = new MapModel();
   }
 
 }
