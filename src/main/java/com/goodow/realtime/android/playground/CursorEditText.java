@@ -15,7 +15,7 @@ package com.goodow.realtime.android.playground;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.accessibility.AccessibilityEvent;
+import android.view.MotionEvent;
 import android.widget.EditText;
 
 public class CursorEditText extends EditText {
@@ -38,9 +38,17 @@ public class CursorEditText extends EditText {
   @Override
   protected void onSelectionChanged(int selStart, int selEnd) {
     super.onSelectionChanged(selStart, selEnd);
-    if (listener != null) {
+    if (listener != null && selStart!=selEnd) {
       listener.onCursorChanged(selStart, selEnd);
     }
   }
 
+  @Override
+  public boolean onTouchEvent(MotionEvent event) {
+    boolean bool = super.onTouchEvent(event);
+    if (listener != null && event.getAction() == MotionEvent.ACTION_UP) {
+      listener.onCursorChanged(getSelectionStart(), getSelectionEnd());
+    }
+    return bool;
+  }
 }

@@ -39,22 +39,30 @@ public class CollaborativeStringActivity extends BaseActivity {
 
   private class StringModel implements RealtimeModel {
     private CollaborativeString str;
+    private boolean isTextChangedLocal = true;
+    private boolean isCursorChangedLocal = true;
 
     @Override
     public void connectRealtime() {
       str.onTextDeleted(new Handler<TextDeletedEvent>() {
         @Override
-        public void handle(TextDeletedEvent textDeletedEvent) {
-          if(!textDeletedEvent.isLocal()) {
-            deleteText(textDeletedEvent.index(), textDeletedEvent.text());
+        public void handle(TextDeletedEvent event) {
+          if(!event.isLocal()) {
+            isTextChangedLocal = false;
+            isCursorChangedLocal = false;
+            stringText.getText().delete(event.index(), event.index() + event.text().length());
+            reSelectText();
           }
         }
       });
       str.onTextInserted(new Handler<TextInsertedEvent>() {
         @Override
-        public void handle(TextInsertedEvent textInsertedEvent) {
-          if(!textInsertedEvent.isLocal()) {
-            insertText(textInsertedEvent.index(), textInsertedEvent.text());
+        public void handle(TextInsertedEvent event) {
+          if(!event.isLocal()) {
+            isTextChangedLocal = false;
+            isCursorChangedLocal = false;
+            stringText.getText().insert(event.index(), event.text());
+            reSelectText();
           }
         }
       });
@@ -73,12 +81,21 @@ public class CollaborativeStringActivity extends BaseActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+          if (!isTextChangedLocal) {
+            isTextChangedLocal = true;
+            return;
+          }
           str.setText(stringText.getText().toString());
         }
+
       });
       stringText.setOnCusorChangedListener(new CursorEditText.OnCursorChangedListener() {
         @Override
         public void onCursorChanged(int startIndex, int endIndex) {
+          if (!isCursorChangedLocal) {
+            isCursorChangedLocal = true;
+            return;
+          }
           cursorStart.setIndex(startIndex);
           cursorEnd.setIndex(endIndex);
         }
@@ -95,17 +112,13 @@ public class CollaborativeStringActivity extends BaseActivity {
     @Override
     public void updateUi() {
       stringText.setText(str.getText());
+    }
+
+    private void reSelectText() {
       stringText.setSelection(guardedCursor(cursorStart.index()), guardedCursor(cursorEnd.index()));
-    }
-
-    private void deleteText(int index, String str) {
-      Editable text = stringText.getText();
-      text.delete(index-str.length()+1, index+1);
-    }
-
-    private void insertText(int index, String str) {
-      Editable text = stringText.getText();
-      text.insert(index, str);
+      if(stringText.getSelectionStart() != stringText.getSelectionEnd()) {
+        stringText.performLongClick();
+      }
     }
 
     private int guardedCursor(int cursor) {
