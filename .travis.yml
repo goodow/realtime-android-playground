@@ -1,14 +1,16 @@
-language: java
+language: android
+jdk: oraclejdk7
+android:
+  components:
+  - platform-tools
+  - android-21
+  - build-tools-21.1.2
+  - extra
 
 before_install:
 - wget -P target/travis https://raw.githubusercontent.com/goodow/maven/master/settings.xml
 - sudo apt-get update -qq
 - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null; fi
-- wget http://dl.google.com/android/android-sdk_r22.6.2-linux.tgz
-- tar -zxf android-sdk_r22.6.2-linux.tgz
-- export ANDROID_HOME=$PWD/android-sdk-linux
-- export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
-- echo yes | android update sdk --filter android-19,build-tools-19.1.0 --no-ui --force > /dev/null
 
 after_success:
 - '[ ${TRAVIS_PULL_REQUEST} = ''false'' ] && mvn deploy -Psonatype-oss-release -Dgpg.skip=true

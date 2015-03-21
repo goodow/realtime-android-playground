@@ -3,10 +3,7 @@
     package="com.goodow.realtime.android.playground"
     android:versionCode="14"
     android:versionName="0.5.5-SNAPSHOT" >
-
-    <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="19" />
+    <uses-sdk android:minSdkVersion="15"/>
 
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Keeps the processor from sleeping when a message is received. -->
